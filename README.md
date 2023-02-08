@@ -1,4 +1,4 @@
-# imperium
+# imperiumbid
 
 ImperiumBid - An Online Bidding Platform
 
