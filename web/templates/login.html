@@ -1,0 +1,23 @@
+{% extends "layouts/base.html" %}
+
+{% block body %}
+      <main style="margin-top: 20px; display: flex; justify-content: center; align-items: center;">
+        <section style="margin-top: 5px; padding: calc((100vh - 40px - 100px) / 6)">
+          <h2 style="font-size: 40px; text-align: center; margin-bottom: 30px;">Login</h2>
+          <div>
+            <form style="display: flex; flex-direction: column; align-items: center; gap: 10px;" method="post">
+							{% csrf_token %}
+              <div class="form-group">
+                <input type="text" name="email" placeholder="Email" style="height: 40px; width: 300px;" autofocus />
+              </div>
+              <div class="form-group">
+                <input type="text" name="password" placeholder="Password" style="height: 40px; width: 300px;" />
+              </div>
+              <div class="form-group">
+                <input type="submit" value="Login" style="height: 40px; width: 300px; background-color: var(--button-bg-dark-primary); border: none; font-weight: bold; font-size: 16px;" />
+              </div>
+            </form>
+          </div>
+        </section>
+      </main>
+{% endblock %}
