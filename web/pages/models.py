@@ -22,7 +22,7 @@ class User(models.Model):
     password = models.CharField(max_length=255)
     avatar = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(blank=True)
+    modified_at = models.DateTimeField(null=True, blank=True)
     
     def get_full_name(self):
         return f"{self.firstname} {self.lastname}"

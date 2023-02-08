@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseNotFound
 
 import datetime
@@ -38,14 +38,19 @@ def register(request):
             errors = ["Passwords don't match!"]
             return render(request, "register.html", { "errors": errors })
     else:
-        return render(request, "register.html")
+        return redirect("login/")
 
 def login(request):
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
-        print(email, password)
-        return render(request, "home.html")
+        
+        user = User.objects.get(email=email)
+        if(user.password == password):
+            return redirect("/")
+        else:
+            errors = ["Username or passwords don't match!"]
+            return render(request, "login.html", { "errors": errors })
     else:
         return render(request, "login.html")
 
