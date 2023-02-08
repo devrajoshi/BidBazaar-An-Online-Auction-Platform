@@ -13,7 +13,9 @@ def index(request):
 
 
 def explore(request):
-    return render(request, "explore.html")
+    bids = Item.objects.all()
+    context = {"bids": bids}
+    return render(request, "explore.html", context)
 
 
 def register(request):
@@ -30,7 +32,7 @@ def register(request):
             user = User.objects.create(firstname=firstname, lastname=lastname, email=email, password=confirm_password)
 
             if user:
-                return render(request, "login.html")
+                return redirect("/login")
             else:
                 errors = ["Something went wrong!"]
                 return render(request, "register.html", { "errors": errors })
@@ -38,7 +40,7 @@ def register(request):
             errors = ["Passwords don't match!"]
             return render(request, "register.html", { "errors": errors })
     else:
-        return redirect("login/")
+        return render(request, "register.html")
 
 def login(request):
     if request.method == "POST":
@@ -46,8 +48,12 @@ def login(request):
         password = request.POST.get("password")
         
         user = User.objects.get(email=email)
-        if(user.password == password):
-            return redirect("/")
+        if user:
+            if(user.password == password):
+                return redirect("/")
+            else:
+                errors = ["Username or passwords don't match!"]
+                return render(request, "login.html", { "errors": errors })
         else:
             errors = ["Username or passwords don't match!"]
             return render(request, "login.html", { "errors": errors })
@@ -63,3 +69,6 @@ def item_page(request, item_id, item_slug):
 
 def Post(request):
     return render(request,'post.html')
+
+def user_profile(request, user_id):
+    return render(request, "user_profile.html")
