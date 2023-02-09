@@ -145,6 +145,12 @@ main {
   color: var(--text-primary);
 }
 
+.container {
+  margin: 0px 50px -30px 100px;
+  background-color: var(--bg-light-primary);
+  height: 800px;
+}
+
 footer {
   padding: var(--padding-primary);
   text-align: center;
