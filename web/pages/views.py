@@ -29,36 +29,43 @@ def register(request):
         confirm_password = request.POST.get("confirm_password")
 
         if password == confirm_password:
-            user = User.objects.create(firstname=firstname, lastname=lastname, email=email, password=confirm_password)
+            user = User.objects.create(
+                firstname=firstname,
+                lastname=lastname,
+                email=email,
+                password=confirm_password,
+            )
 
             if user:
                 return redirect("/login")
             else:
                 errors = ["Something went wrong!"]
-                return render(request, "register.html", { "errors": errors })
+                return render(request, "register.html", {"errors": errors})
         else:
             errors = ["Passwords don't match!"]
-            return render(request, "register.html", { "errors": errors })
+            return render(request, "register.html", {"errors": errors})
     else:
         return render(request, "register.html")
+
 
 def login(request):
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
-        
+
         user = User.objects.get(email=email)
         if user:
-            if(user.password == password):
+            if user.password == password:
                 return redirect("/")
             else:
                 errors = ["Username or passwords don't match!"]
-                return render(request, "login.html", { "errors": errors })
+                return render(request, "login.html", {"errors": errors})
         else:
             errors = ["Username or passwords don't match!"]
-            return render(request, "login.html", { "errors": errors })
+            return render(request, "login.html", {"errors": errors})
     else:
         return render(request, "login.html")
+
 
 def item_page(request, item_id, item_slug):
     bid = Item.objects.get(id=item_id)
@@ -67,8 +74,18 @@ def item_page(request, item_id, item_slug):
     context = {"bid": bid}
     return render(request, "item_page.html", context)
 
+
 def Post(request):
-    return render(request,'post.html')
+    return render(request, "post.html")
+
 
 def user_profile(request, user_id):
-    return render(request, "user_profile.html")
+    return render(request, "profile/sidebar.html")
+
+
+def side_bar(request):
+    return render(request, "profile/sidebar.html")
+
+
+def me_page(request):
+    return render(request, "profile/me_page.html")

@@ -10,4 +10,6 @@ urlpatterns = [
     path("item/<int:item_id>/<slug:item_slug>/", views.item_page, name="item_page"),
     path("post/", views.Post, name="post"),
     path("profile/<int:user_id>", views.user_profile, name="user_profile"),
+    path("me/", views.me_page, name="profile_page"),
+    path("sidebar/", views.side_bar, name="side_bar"),
 ]
