@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User as DjangoUser
 
 # Create your models here.
 class Item(models.Model):
@@ -15,15 +16,16 @@ class Item(models.Model):
     def __str__(self):
         return self.title
 
+
 class User(models.Model):
-    email = models.CharField(max_length=255)
-    firstname = models.CharField(max_length=255)
-    lastname = models.CharField(max_length=255)
-    password = models.CharField(max_length=255)
-    avatar = models.CharField(max_length=255, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(null=True, blank=True)
-    
+    user = models.OneToOneField(DjangoUser, on_delete=models.CASCADE, related_name="profile")
+    is_email_verified = models.BooleanField(default=False)
+    email_token = models.CharField(max_length=255, null=True, blank=True)
+    avatar = models.CharField(max_length=255, blank=True, null=True)
+    last_modified = models.DateTimeField(null=True, blank=True)
+    pan_no = models.PositiveIntegerField()
+    citizen_no = models.PositiveIntegerField()
+
     def get_full_name(self):
         return f"{self.firstname} {self.lastname}"
 
