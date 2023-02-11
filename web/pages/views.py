@@ -5,6 +5,8 @@ from django.contrib.auth import authenticate, login as django_login
 
 import datetime
 
+from django.template import context
+
 from .models import Item, User
 
 # Create your views here.
@@ -43,19 +45,19 @@ def register(request):
                 return render(request, "register.html", { "errors": errors })
 
             user = DjangoUser.objects.create(first_name=firstname, last_name=lastname, email=email, username=email)
-
             if user:
                 user.set_password(password)
                 user.save()
                 return redirect("/login")
             else:
                 errors = ["Something went wrong!"]
-                return render(request, "register.html", { "errors": errors })
+                return render(request, "register.html", {"errors": errors})
         else:
             errors = ["Passwords don't match!"]
-            return render(request, "register.html", { "errors": errors })
+            return render(request, "register.html", {"errors": errors})
     else:
         return render(request, "register.html")
+
 
 def login(request):
     if request.user.is_authenticated:
@@ -64,7 +66,6 @@ def login(request):
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
-        
         dbUser = DjangoUser.objects.filter(email=email)
         if dbUser:
             user = authenticate(username=email, password=password)
@@ -73,12 +74,13 @@ def login(request):
                 return redirect("/")
             else:
                 errors = ["Username or passwords don't match!"]
-                return render(request, "login.html", { "errors": errors })
+                return render(request, "login.html", {"errors": errors})
         else:
             errors = ["Username or passwords don't match!"]
-            return render(request, "login.html", { "errors": errors })
+            return render(request, "login.html", {"errors": errors})
     else:
         return render(request, "login.html")
+
 
 def item_page(request, item_id, item_slug):
     bid = Item.objects.get(id=item_id)
@@ -87,8 +89,16 @@ def item_page(request, item_id, item_slug):
     context = {"bid": bid}
     return render(request, "item_page.html", context)
 
-def Post(request):
-    return render(request,'post.html')
+
+def post(request):
+    return render(request, "post.html")
+
 
 def user_profile(request, user_id):
-    return render(request, "user_profile.html")
+    user_details = User.objects.get(id=user_id)
+    context = {"user_details": user_details}
+    return render(request, "profile/me_page.html", context)
+
+
+def me_page(request):
+    return render(request, "profile/me_page.html", context)

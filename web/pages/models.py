@@ -16,12 +16,16 @@ class Item(models.Model):
     def __str__(self):
         return self.title
 
+
 class User(models.Model):
     user = models.OneToOneField(DjangoUser, on_delete=models.CASCADE, related_name="profile")
     is_email_verified = models.BooleanField(default=False)
     email_token = models.CharField(max_length=255, null=True, blank=True)
     avatar = models.CharField(max_length=255, blank=True, null=True)
-    
+    last_modified = models.DateTimeField(null=True, blank=True)
+    pan_no = models.PositiveIntegerField()
+    citizen_no = models.PositiveIntegerField()
+
     def get_full_name(self):
         return f"{self.firstname} {self.lastname}"
 
