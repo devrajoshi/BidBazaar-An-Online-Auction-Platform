@@ -20,10 +20,13 @@ class User(models.Model):
     email = models.CharField(max_length=255)
     firstname = models.CharField(max_length=255)
     lastname = models.CharField(max_length=255)
+    user_id = models.PositiveIntegerField()
     password = models.CharField(max_length=255)
     avatar = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(null=True, blank=True)
+    pan_no = models.PositiveIntegerField()
+    citizen_no = models.PositiveIntegerField()
 
     def get_full_name(self):
         return f"{self.firstname} {self.lastname}"

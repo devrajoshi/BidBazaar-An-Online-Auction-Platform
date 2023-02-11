@@ -145,12 +145,28 @@ main {
   color: var(--text-primary);
 }
 
-.container {
-  margin: 0px 50px -30px 100px;
-  background-color: var(--bg-light-primary);
+.profile-container {
+  margin: 0px 50px -30px 200px;
+  padding: 10px 0 50px 80px;
   height: 800px;
 }
 
+.profile-container .user-profile-card .profile {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+
+  margin-bottom: 40px;
+}
+
+.profile-container .user-profile-card .profile p {
+  font-size: 20px;
+}
+.profile-container .user-profile-card .user-extra-details p {
+  font-size: 20px;
+  margin: 0 0 15px 0;
+}
 .item-details-title {
   padding: 10px 0 50px 100px;
 }
@@ -163,8 +179,16 @@ main {
   display: flex;
 }
 
+.post-item form {
+  width: 60%;
+  /* background: #1e1; */
+}
 .post-item div {
   margin-bottom: 2.2em;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  /* background: #fff; */
 }
 
 .post-item input {
@@ -183,6 +207,14 @@ main {
   display: flex;
   align-items: center;
   gap: 30px;
+}
+
+.post-item .item-condition select {
+  width: 120px;
+  height: 30px;
+
+  font-size: 16px;
+  text-align: center;
 }
 
 footer {
