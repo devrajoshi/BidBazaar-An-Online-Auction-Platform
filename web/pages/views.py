@@ -75,7 +75,7 @@ def item_page(request, item_id, item_slug):
     return render(request, "item_page.html", context)
 
 
-def Post(request):
+def post(request):
     return render(request, "post.html")
 
 
