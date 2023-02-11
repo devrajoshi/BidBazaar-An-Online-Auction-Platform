@@ -8,7 +8,9 @@ from .models import Item, User
 # Create your views here.
 def index(request):
     bids = Item.objects.all()
-    context = {"bids": bids}
+    context = {
+        "bids": bids
+        }
     return render(request, "home.html", context)
 
 
