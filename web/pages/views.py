@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseNotFound
+from django.contrib.auth.models import User as DjangoUser
+from django.contrib.auth import authenticate, login as django_login
 
 import datetime
 
@@ -7,8 +9,11 @@ from .models import Item, User
 
 # Create your views here.
 def index(request):
+    user = None
+    if request.user.is_authenticated:
+        user = DjangoUser.objects.get(id=request.user.id)
     bids = Item.objects.all()
-    context = {"bids": bids}
+    context = {"bids": bids, user: user}
     return render(request, "home.html", context)
 
 
@@ -19,6 +24,9 @@ def explore(request):
 
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect("/")
+
     if request.method == "POST":
         errors = []
 
@@ -29,9 +37,16 @@ def register(request):
         confirm_password = request.POST.get("confirm_password")
 
         if password == confirm_password:
-            user = User.objects.create(firstname=firstname, lastname=lastname, email=email, password=confirm_password)
+            userinDB = DjangoUser.objects.filter(email=email)
+            if userinDB.exists():
+                errors = ["Something went wrong!"]
+                return render(request, "register.html", { "errors": errors })
+
+            user = DjangoUser.objects.create(first_name=firstname, last_name=lastname, email=email, username=email)
 
             if user:
+                user.set_password(password)
+                user.save()
                 return redirect("/login")
             else:
                 errors = ["Something went wrong!"]
@@ -43,13 +58,18 @@ def register(request):
         return render(request, "register.html")
 
 def login(request):
+    if request.user.is_authenticated:
+        return redirect("/")
+
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
         
-        user = User.objects.get(email=email)
-        if user:
-            if(user.password == password):
+        dbUser = DjangoUser.objects.filter(email=email)
+        if dbUser:
+            user = authenticate(username=email, password=password)
+            if user:
+                django_login(request, user)
                 return redirect("/")
             else:
                 errors = ["Username or passwords don't match!"]
