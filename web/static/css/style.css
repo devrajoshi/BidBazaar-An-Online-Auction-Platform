@@ -151,6 +151,40 @@ main {
   height: 800px;
 }
 
+.item-details-title {
+  padding: 10px 0 50px 100px;
+}
+.post-item {
+  padding-left: 200px;
+
+  font-weight: bold;
+  font-size: 20px;
+
+  display: flex;
+}
+
+.post-item div {
+  margin-bottom: 2.2em;
+}
+
+.post-item input {
+  height: 30px;
+  padding: 5px;
+  font-size: 16px;
+}
+
+.post-item .item-title {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.post-item .item-description {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
 footer {
   padding: var(--padding-primary);
   text-align: center;
