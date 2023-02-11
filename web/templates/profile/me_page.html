@@ -2,6 +2,25 @@
 
 {% block body %}
 {% include 'profile/side_bar.html' %}
-<div class="container">This is me :)</div>
+
+<h2>Profile</h2>
+
+<div class="profile-container">
+	<section class="user-profile-card">
+		<div class="profile">
+			<figure>
+				<img src="../../static/uploads/profile.jpg" alt="profile-pic" width="250px" height="250px">
+			</figure>
+			<p>{{ user_details.get_full_name }}</p>
+			<p>{{ user_details.user_id }}</p>
+		</div>
+		
+		<div class="user-extra-details">
+			<p>E-mail : {{ user_details.email }}</p>
+			<p>PAN No : {{ user_details.pan_no }}</p>
+			<p>Citizenship ID : {{ user_details.citizen_no }}</p>
+		</div>
+	</section>
+	</div>
 
 {% endblock %}
