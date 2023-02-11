@@ -3,6 +3,8 @@ from django.http import HttpResponseNotFound
 
 import datetime
 
+from django.template import context
+
 from .models import Item, User
 
 # Create your views here.
@@ -80,12 +82,10 @@ def post(request):
 
 
 def user_profile(request, user_id):
-    return render(request, "profile/sidebar.html")
-
-
-def side_bar(request):
-    return render(request, "profile/sidebar.html")
+    user_details = User.objects.get(id=user_id)
+    context = {"user_details": user_details}
+    return render(request, "profile/me_page.html", context)
 
 
 def me_page(request):
-    return render(request, "profile/me_page.html")
+    return render(request, "profile/me_page.html", context)
