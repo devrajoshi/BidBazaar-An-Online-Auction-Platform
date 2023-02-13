@@ -15,13 +15,9 @@ def index(request):
     if request.user.is_authenticated:
         user = DjangoUser.objects.get(id=request.user.id)
     bids = Item.objects.all()
-<<<<<<< HEAD
-    context = {
-        "bids": bids
-        }
-=======
+
     context = {"bids": bids, user: user}
->>>>>>> 21d605a232f5236560be61760ca20d21174eba29
+
     return render(request, "home.html", context)
 
 
