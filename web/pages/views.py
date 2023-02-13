@@ -92,8 +92,8 @@ def item_page(request, item_id, item_slug):
     return render(request, "item_page.html", context)
 
 
-def post(request):
-    return render(request, "post.html")
+def post_item(request):
+    return render(request, "post_item.html")
 
 
 def user_profile(request, user_id):
