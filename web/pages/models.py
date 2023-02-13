@@ -27,7 +27,7 @@ class User(models.Model):
     citizen_no = models.PositiveIntegerField()
 
     def get_full_name(self):
-        return f"{self.firstname} {self.lastname}"
+        return f"{self.user.first_name} {self.user.last_name}"
 
     def __str__(self):
         return self.get_full_name()
