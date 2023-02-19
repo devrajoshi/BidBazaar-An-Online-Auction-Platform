@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseNotFound
 from django.contrib.auth.models import User as DjangoUser
-from django.contrib.auth import authenticate, login as django_login
-
-import datetime
+from django.contrib.auth import authenticate, login as django_login, logout as django_logout
+from django.contrib.auth.decorators import login_required
 
 from django.template import context
 
@@ -73,6 +72,9 @@ def login(request):
             user = authenticate(username=email, password=password)
             if user:
                 django_login(request, user)
+                redirect_path_next = request.GET.get("next")
+                if redirect_path_next:
+                    return redirect(redirect_path_next)
                 return redirect("/")
             else:
                 errors = ["Username or passwords don't match!"]
@@ -92,6 +94,7 @@ def item_page(request, item_id, item_slug):
     return render(request, "item_page.html", context)
 
 
+@login_required(login_url="/login")
 def post_item(request):
     return render(request, "post_item.html")
 
@@ -103,4 +106,9 @@ def user_profile(request, user_id):
 
 
 def me_page(request):
+    context = {}
     return render(request, "profile/me_page.html", context)
+
+def logout(request):
+    django_logout(request)
+    return redirect("/")
