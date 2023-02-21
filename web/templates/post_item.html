@@ -2,41 +2,41 @@
 
 {% block body %}
 <!-- <main style="display: flex; justify-content: start; align-items: center;"> -->
-    <section>
-        <h2 class="item-details-title">Insert Deatils</h2>
-        <br>
-				<div class="post-item">
-            <form >
-							<div class="item-title">
-								<label>Title :		</label>
-								<input type="text" name="Title">
-						</div>
-                <div class="item-condition">
-                    <label>Condition :		</label>
-                    <select name="Condition" style="display:flex; justify-content:center">
-                        <option value="New">New</option>
-                        <option value="Used">Used</option>
-                    </select>
-                </div>
-                <div class="item-description">
-                    <label>Description :		</label>
-                    <textarea rows="8" cols="30"></textarea>
-                </div>
-                <div class="item-pic">
-                    <label>Picture :		</label>
-                    <input type="file" value="picture">
-                </div>
-                <div class="item-starting-price">
-                    <label>Starting Price :			</label>
-                    <input type="text" name="InitialBid" placeholder="Rs......">
-                </div>
-                <div class="location-of-seller">
-                    <label>Location :		</label>
-                    <input type="text" name="Location" placeholder="Country   / city   /  area">
-                </div>
-               <input type="submit">
-            </form>
-        </div>
-    </section>
+<section>
+    <h2 class="item-details-title">Insert Deatils</h2>
+    <br>
+    <div class="post-item">
+        <form>
+            <div class="item-title">
+                <label>Title : </label>
+                <input type="text" name="Title">
+            </div>
+            <div class="item-condition">
+                <label>Condition : </label>
+                <select name="Condition" style="display:flex; justify-content:center">
+                    <option value="New">New</option>
+                    <option value="Used">Used</option>
+                </select>
+            </div>
+            <div class="item-description">
+                <label>Description : </label>
+                <textarea rows="8" cols="30"></textarea>
+            </div>
+            <div class="item-pic">
+                <label>Picture : </label>
+                <input type="file" value="picture">
+            </div>
+            <div class="item-starting-price">
+                <label>Starting Price : </label>
+                <input type="text" name="InitialBid" placeholder="Rs......">
+            </div>
+            <div class="location-of-seller">
+                <label>Location : </label>
+                <input type="text" name="Location" placeholder="Country   / city   /  area">
+            </div>
+            <input type="submit">
+        </form>
+    </div>
+</section>
 </main>
 {% endblock %}
