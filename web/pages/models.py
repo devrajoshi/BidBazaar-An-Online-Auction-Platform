@@ -8,7 +8,7 @@ class Item(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2)
     seller = models.CharField(max_length=255)
     seller_id = models.PositiveBigIntegerField(default=0)
-    image = models.CharField(max_length=255)
+    image = models.FileField(upload_to="uploads/",default=None)
     added_at = models.DateTimeField(auto_now_add=True)
     deadline_at = models.DateTimeField(blank=True)
     slug = models.CharField(max_length=255)
