@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseNotFound
 from django.contrib.auth.models import User as DjangoUser
-from django.contrib.auth import authenticate, login as django_login, logout as django_logout
+from django.contrib.auth import (
+    authenticate,
+    login as django_login,
+    logout as django_logout,
+)
 from django.contrib.auth.decorators import login_required
 
-from django.template import context
-
 from .models import Item, User
+
 
 # Create your views here.
 def index(request):
@@ -15,7 +18,7 @@ def index(request):
         user = DjangoUser.objects.get(id=request.user.id)
     bids = Item.objects.all()
 
-    context = {"bids": bids, user: user}
+    context = {"bids": bids, "user": user}
 
     return render(request, "home.html", context)
 
@@ -43,9 +46,11 @@ def register(request):
             userinDB = DjangoUser.objects.filter(email=email)
             if userinDB.exists():
                 errors = ["Something went wrong!"]
-                return render(request, "register.html", { "errors": errors })
+                return render(request, "register.html", {"errors": errors})
 
-            user = DjangoUser.objects.create(first_name=firstname, last_name=lastname, email=email, username=email)
+            user = DjangoUser.objects.create(
+                first_name=firstname, last_name=lastname, email=email, username=email
+            )
             if user:
                 user.set_password(password)
                 user.save()
@@ -108,6 +113,7 @@ def user_profile(request, user_id):
 def me_page(request):
     context = {}
     return render(request, "profile/me_page.html", context)
+
 
 def logout(request):
     django_logout(request)
