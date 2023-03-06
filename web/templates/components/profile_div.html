@@ -1,8 +1,8 @@
 <div class="profile-div hide">
-  {% if not user.is_anonymous %}
+  {% if user.is_authenticated %}
   <div class="profile-info">
     {% if user.avatar %}
-    <div><img src="/static/uploads/{{ user.avatar }}" /></div>
+    <div><img src="/uploads/{{ user.avatar }}" /></div>
     {% else %}
     <div>
       <svg style="width: 40px; height: 40px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"

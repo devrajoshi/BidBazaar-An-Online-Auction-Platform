@@ -88,7 +88,7 @@ main {
 }
 
 .link {
-  color: var(--text-primary);
+  color: cyan;
   text-decoration: none;
 }
 
@@ -147,7 +147,7 @@ main {
   padding: 2px 10px 8px 10px;
 }
 
-.form-group input[type="text"] {
+.form-group input {
   text-indent: 5px;
 }
 
