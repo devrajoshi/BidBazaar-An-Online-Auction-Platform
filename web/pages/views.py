@@ -7,7 +7,9 @@ from django.contrib.auth import (
     logout as django_logout,
 )
 from django.contrib.auth.decorators import login_required
+from django.utils.text import slugify
 
+from .forms import PostItem
 from .models import Item, User
 
 
@@ -101,7 +103,25 @@ def item_page(request, item_id, item_slug):
 
 @login_required(login_url="/login")
 def post_item(request):
-    return render(request, "post_item.html")
+    if request.method == "POST":
+        post_item_form = PostItem(request.POST, request.FILES)
+
+        if post_item_form.is_valid():
+            item = post_item_form.save(commit=False)
+            item.seller = request.user.username
+            item.slug = slugify(item.title)
+            item.seller_id = request.user.id
+            print(item)
+            item.save()
+
+            return redirect("/")
+        else:
+            print(post_item_form)
+            print(post_item_form.errors)
+            print("form not valid")
+    
+    form = PostItem()
+    return render(request, "post_item.html", { "form": form })
 
 
 def user_profile(request, user_id):

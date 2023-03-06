@@ -6,7 +6,9 @@
           {% include "components/breadcrumb.html" %}
 					<h2 style="margin: 10px 0px;">{{ bid.title }}</h2>
           <div style="display: flex; gap: 10px;">
-						<img src="/uploads/{{ bid.image }}"/>
+            <div style="max-width: 600px;">
+              <img src="/uploads/{{ bid.image }}" style="width: 100%;" />
+            </div>
             <div>
 							<h3 style="font-size: 30px;">{{ bid.title }}</h3>
 							<p>{{ bid.description }}</p>
