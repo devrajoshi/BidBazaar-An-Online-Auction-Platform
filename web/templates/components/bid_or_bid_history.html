@@ -1,0 +1,5 @@
+{% if user.username == bid.seller.username %}
+  <button class="button" style="padding: 8px 15px; font-size: 18px;">View Bid History</button>
+{% else %}
+<button class="button" style="padding: 8px 15px; font-size: 18px;" onclick="showBidModal('{{ bid|json_dump }}')">Bid</button>
+{% endif %}

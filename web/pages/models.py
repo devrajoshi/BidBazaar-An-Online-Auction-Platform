@@ -10,8 +10,8 @@ class User(models.Model):
     avatar = models.CharField(max_length=255, blank=True, null=True)
     last_modified = models.DateTimeField(null=True, blank=True)
     address = models.CharField(max_length=255, blank=True, null=True)
-    pan_no = models.PositiveIntegerField()
-    citizen_no = models.PositiveIntegerField()
+    pan_no = models.PositiveIntegerField(blank=True, null=True)
+    citizen_no = models.PositiveIntegerField(blank=True, null=True)
 
     def get_full_name(self):
         return f"{self.user.first_name} {self.user.last_name}"
@@ -24,7 +24,7 @@ class Item(models.Model):
     description = models.TextField()
     image = models.ImageField(default=None)
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    seller = models.ForeignKey(User, on_delete=models.PROTECT)
+    seller = models.ForeignKey(DjangoUser, on_delete=models.PROTECT)
     added_at = models.DateTimeField(auto_now_add=True)
     deadline_at = models.DateTimeField(blank=True)
     slug = models.CharField(max_length=255)

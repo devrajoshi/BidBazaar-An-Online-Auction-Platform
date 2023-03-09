@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect
 from django.http import HttpResponseNotFound
 from django.contrib.auth.models import User as DjangoUser
@@ -50,12 +51,12 @@ def register(request):
                 errors = ["Something went wrong!"]
                 return render(request, "register.html", {"errors": errors})
 
-            user = DjangoUser.objects.create(
-                first_name=firstname, last_name=lastname, email=email, username=email
-            )
-            if user:
+            user = DjangoUser.objects.create(first_name=firstname, last_name=lastname, email=email, username=email)
+            site_user = User.objects.create(user_id=user.pk)
+            if user and site_user:
                 user.set_password(password)
-                user.save()
+                user = user.save()
+                site_user.save()
                 return redirect("/login")
             else:
                 errors = ["Something went wrong!"]
@@ -108,16 +109,12 @@ def post_item(request):
 
         if post_item_form.is_valid():
             item = post_item_form.save(commit=False)
-            item.seller = request.user.username
             item.slug = slugify(item.title)
             item.seller_id = request.user.id
-            print(item)
             item.save()
 
             return redirect("/")
         else:
-            print(post_item_form)
-            print(post_item_form.errors)
             print("form not valid")
     
     form = PostItem()

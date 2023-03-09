@@ -9,11 +9,11 @@
             <div class="auction-item">
               <div class="auction-item-image">
 								<img src="/uploads/{{ bid.image }}" />
-              </div>
+              </div> 
               <div class="auction-item-description">
                 <div style="display: flex; flex-direction: column;">
 									<div><a class="link" href="/item/{{ bid.id }}/{{ bid.title|slugify }}">{{ bid.title }}</a></div>
-									<div style="font-size: 14px; font-style: italic; color: #aaaaaa;">{{ bid.seller }}</div>
+                  <div style="font-size: 14px; font-style: italic; color: #aaaaaa;">{{ bid.seller.first_name }} {{ bid.seller.last_name }}</div>
 									<div style="font-size: 12px;">Deadline: {{ bid.added_at }}</div>
                 </div>
                 <div style="display: flex; flex-direction: column; justify-content: space-between;">
@@ -26,7 +26,7 @@
                     </span>
 										<span>{{ bid.price }}</span>
                   </div>
-                  <div class="button">Bid</div>
+                  {% include "components/bid_or_bid_history.html" %}
                 </div>
               </div>
             </div>

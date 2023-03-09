@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_tags %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -12,6 +13,7 @@
     {% include "components/header.html" %}
     {% block body %}{% endblock %}
     {% include "components/footer.html" %}
-    
+    {% include "components/toast.html" %}
+    {% include "components/bid_modal.html" %}
   </body>
 </html>

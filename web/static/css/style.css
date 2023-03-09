@@ -23,6 +23,10 @@
   --padding-primary: 0px 10px;
 }
 
+.show {
+  display: block;
+}
+
 .hide {
   display: none;
 }
@@ -88,7 +92,7 @@ main {
 }
 
 .link {
-  color: cyan;
+  color: var(--text-primary);
   text-decoration: none;
 }
 
@@ -253,6 +257,50 @@ main {
 footer {
   padding: var(--padding-primary);
   text-align: center;
+}
+
+.toast-container {
+  position: absolute;
+  top: 100;
+  right: 0;
+}
+
+.toast {
+  padding: 5px;
+}
+
+.toast.info {
+  background-color: gray;
+}
+
+.toast.error {
+  background-color: red;
+}
+
+.toast.success {
+  background-color: green;
+}
+
+.toast.warning {
+  background-color: yellow;
+}
+
+.bid-modal-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.bid-modal {
+  position: absolute;
+  padding: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--item-bg-primary);
 }
 
 @media (prefers-color-scheme: dark) {

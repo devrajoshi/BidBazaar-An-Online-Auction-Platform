@@ -4,17 +4,16 @@
       <main style="margin-top: 20px;">
         <section style="margin-top: 5px;">
           {% include "components/breadcrumb.html" %}
-					<h2 style="margin: 10px 0px;">{{ bid.title }}</h2>
-          <div style="display: flex; gap: 10px;">
+          <div style="display: flex; gap: 10px; margin-top: 30px;">
             <div style="max-width: 600px;">
               <img src="/uploads/{{ bid.image }}" style="width: 100%;" />
             </div>
             <div>
-							<h3 style="font-size: 30px;">{{ bid.title }}</h3>
+							<h2 style="font-size: 30px;">{{ bid.title }}</h2>
 							<p>{{ bid.description }}</p>
 							<p>Price: ${{ bid.price }}</p>
 							<p>Deadline: {{ bid.deadline_at }}</p>
-              <button class="button" style="padding: 8px 15px; font-size: 18px;">Bid</button>
+              {% include "components/bid_or_bid_history.html" %}
             </div>
           </div>
         </section>
