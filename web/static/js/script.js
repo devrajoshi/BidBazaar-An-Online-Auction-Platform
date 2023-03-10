@@ -22,7 +22,7 @@ const createBidModal = (bid) => {
           <div>${bid.description}</div>
           <br />
           <div>
-<input type="number" min="${bid.price}" value="${bid.price}" style="height: 30px;" />
+            <input type="number" min="${bid.price}" value="${bid.price}" style="height: 30px;" />
             <button class="button" style="width: 70px; height: 30px; font-size: 18px;">Bid</button>
           </div>
         </div>
@@ -32,9 +32,13 @@ const createBidModal = (bid) => {
 };
 
 const showBidModal = (bid) => {
-  const bidModal = document.querySelector(".bid-modal-container");
-  const bidObj = JSON.parse(bid);
-  bidModal.innerHTML = createBidModal(bidObj);
-  bidModal.classList.remove("hide");
-  document.body.style = "overflow: hidden;"
+  if(isUserLoggedIn) {
+    const bidModal = document.querySelector(".bid-modal-container");
+    const bidObj = JSON.parse(bid);
+    bidModal.innerHTML = createBidModal(bidObj);
+    bidModal.classList.remove("hide");
+    document.body.style = "overflow: hidden;"
+  } else {
+    window.location = "/login?next=/";
+  }
 };
