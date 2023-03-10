@@ -91,7 +91,8 @@ def login(request):
             errors = ["Username or passwords don't match!"]
             return render(request, "login.html", {"errors": errors})
     else:
-        return render(request, "login.html")
+        errors = ["Please login to continue!"]
+        return render(request, "login.html", { "errors": errors })
 
 
 def item_page(request, item_id, item_slug):
