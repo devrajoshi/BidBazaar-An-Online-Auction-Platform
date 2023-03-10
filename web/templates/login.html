@@ -8,9 +8,11 @@
             <form style="display: flex; flex-direction: column; align-items: center; gap: 10px;" method="post">
 							{% csrf_token %}
 							<div style="color: red;">
-								{% for error in errors %}
-									{{error}}
-								{% endfor %}
+                {% if errors %}
+                  {% for error in errors %}
+                    {{error}}
+                  {% endfor %}
+                {% endif %}
 							</div>
               <div class="form-group">
                 <input type="email" name="email" placeholder="Email" style="height: 40px; width: 300px;" autofocus />
