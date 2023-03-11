@@ -5,6 +5,8 @@
 	<nav>
 		<ul style="align-items: center; gap: 20px;">
       {% if user.is_authenticated %}
+	  <li class="button" style="padding: 10px 15px;"><a style="color: inherit; text-decoration: none;"
+		href="/register">Register</a></li>
         <li class="button" style="padding: 10px 15px;"><a style="color: inherit; text-decoration: none;"
 					href="/post">Post Item</a></li>
       {% endif %}
