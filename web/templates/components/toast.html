@@ -1,9 +1,11 @@
-<div class="toast-container">
-{% if messages %}
-  {% for message in messages %}
-  <div class="toast{% if message.tags %} {{ message.tags }}{% endif %}">
-    {{ message }}
-  </div>
-  {% endfor %}
-{% endif %}
+{% load static %}
+<!-- components/toast.html -->
+<div id="toast" class="hidden">
+  <span id="toast-text">{{ message }}</span>
 </div>
+
+<script>
+  let toastMessages = [{% if messages %}{% for message in messages %}"{{ message }}"{% endfor %}{% endif %}];
+</script>
+<script src="{% static 'js/toast.js' %}"></script>
+<!-- components/toast.html -->

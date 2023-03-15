@@ -1,16 +1,16 @@
 {% extends "layouts/base.html" %}
 
 {% block body %}
-<!-- <main style="display: flex; justify-content: start; align-items: center;"> -->
+<main style="display: flex; justify-content: start; align-items: center;">
 <section>
   <h2>Insert Details</h2>
   <div>
-    <form method="post" enctype="multipart/form-data">
+    <form class="post-item-form" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit">Post</button>
     </form>
   </div>
 </section>
-<!-- </main> -->
+</main>
 {% endblock %}

@@ -1,0 +1,26 @@
+/* toast start */
+#toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #333;
+  color: #fff;
+  padding: 16px;
+  border-radius: 5px;
+  z-index: 9999;
+  animation: toast-slide-in 0.5s ease-out;
+}
+
+.hidden {
+  display: none;
+}
+
+@keyframes toast-slide-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+/* toast end */

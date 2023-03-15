@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/static/css/style.css?{% now "U" %}" />
+    <link rel="stylesheet" href="/static/css/toast.css?{% now "U" %}" />
     <script src="/static/js/script.js?{% now "U" %}" defer></script>
     <script>
       let isUserLoggedIn = {% if request.user.is_authenticated %}true{% else %}false{%endif%};
@@ -17,6 +18,5 @@
     {% block body %}{% endblock %}
     {% include "components/footer.html" %}
     {% include "components/toast.html" %}
-    {% include "components/bid_modal.html" %}
   </body>
 </html>
