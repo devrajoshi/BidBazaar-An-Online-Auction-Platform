@@ -254,6 +254,45 @@ main {
   text-align: center;
 }
 
+.post-item-form {
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.post-item-form label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.post-item-form input[type="text"],
+.post-item-form input[type="email"],
+.post-item-form input[type="password"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.post-item-form button[type="submit"] {
+  background-color: var(--button-bg-primary);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.post-item-form button[type="submit"]:hover {
+  background-color: #000;
+  color: var(--button-bg-primary)
+}
+
 footer {
   padding: var(--padding-primary);
   text-align: center;

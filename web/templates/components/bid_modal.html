@@ -1,2 +1,36 @@
-<div class="bid-modal-container hide">
+<div id="bid-modal-{{ bid.slug }}" class="bid-modal hide">
+  <div style="display: flex; justify-content: end;">
+    <button onclick="document.querySelector('#bid-modal-{{ bid.slug }}').classList.add('hide'); document.body.style = 'overflow: auto;'">X</button>
+  </div>
+  <div style="display: flex; gap: 10px;">
+    <div style="max-width: 300px;"><img src="/uploads/{{ bid.image }}" style="width: 100%;" /></div>
+    <div style>
+      <h3>{{ bid.title }}</h3>
+      <br />
+      <div>{{ bid.description }}</div>
+      <br /> 
+      <form id="bid-modal-form-{{ bid.slug }}" method="post">
+        {% csrf_token %}
+        <input name="amount" type="number" min="{{ bid.price }}" value="{{ bid.price }}" style="height: 30px;" />
+        <button class="button" style="width: 70px; height: 30px; font-size: 18px;">Bid</button>
+      </form>
+      <script>
+        document.getElementById("bid-modal-form-{{ bid.slug }}").addEventListener("submit", (event) => {
+          event.preventDefault();
+          const form = event.target.elements;
+          const amount = form.amount.value;
+          const csrf_token = form.csrfmiddlewaretoken.value;
+          fetch("{% url 'bid' bid.id %}", { method: "POST", headers: { "Content-Type": "application/json", "X-CSRFToken": csrf_token }, body: JSON.stringify({ amount }) }).then(response => response.json()).then(data => {
+            if(data.success) {
+              showToast("Bid successful!");
+            } else {
+              showToast(data.message);
+            }
+            document.querySelector('#bid-modal-{{ bid.slug }}').classList.add('hide');
+            document.body.style = 'overflow: auto;'
+          });
+        });
+      </script>
+    </div>
+  </div>
 </div>

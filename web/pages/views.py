@@ -1,6 +1,7 @@
+from django.contrib import messages
 import json
 from django.shortcuts import render, redirect
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, JsonResponse
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth import (
     authenticate,
@@ -11,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 
 from .forms import PostItem
-from .models import Item, User
+from .models import Item, User, Bid
 
 
 # Create your views here.
@@ -37,8 +38,6 @@ def register(request):
         return redirect("/")
 
     if request.method == "POST":
-        errors = []
-
         firstname = request.POST.get("firstname")
         lastname = request.POST.get("lastname")
         email = request.POST.get("email")
@@ -48,8 +47,8 @@ def register(request):
         if password == confirm_password:
             userinDB = DjangoUser.objects.filter(email=email)
             if userinDB.exists():
-                errors = ["Something went wrong!"]
-                return render(request, "register.html", {"errors": errors})
+                messages.error(request, "User already exists!")
+                return render(request, "register.html")
 
             user = DjangoUser.objects.create(first_name=firstname, last_name=lastname, email=email, username=email)
             site_user = User.objects.create(user_id=user.pk)
@@ -59,14 +58,13 @@ def register(request):
                 site_user.save()
                 return redirect("/login")
             else:
-                errors = ["Something went wrong!"]
-                return render(request, "register.html", {"errors": errors})
+                messages.error(request, "Something went wrong!")
+                return render(request, "register.html")
         else:
-            errors = ["Passwords don't match!"]
-            return render(request, "register.html", {"errors": errors})
+            messages.error(request, "Passwords don't match!")
+            return render(request, "register.html")
     else:
         return render(request, "register.html")
-
 
 def login(request):
     if request.user.is_authenticated:
@@ -85,13 +83,16 @@ def login(request):
                     return redirect(redirect_path_next)
                 return redirect("/")
             else:
-                errors = ["Username or passwords don't match!"]
-                return render(request, "login.html", {"errors": errors})
+                messages.error(request, "Username or passwords don't match!")
+                return render(request, "login.html")
         else:
-            errors = ["Username or passwords don't match!"]
-            return render(request, "login.html", {"errors": errors})
+            messages.error(request, "Username or passwords don't match!")
+            return render(request, "login.html")
     else:
-        errors = ["Please login to continue!"]
+        errors = []
+        redirect_path_next = request.GET.get("next")
+        if redirect_path_next:
+            messages.info(request, "Please login to continue!")
         return render(request, "login.html", { "errors": errors })
 
 
@@ -120,6 +121,17 @@ def post_item(request):
     
     form = PostItem()
     return render(request, "post_item.html", { "form": form })
+
+@login_required(login_url="/login")
+def bid(request, item_id):
+    body = json.loads(request.body)
+    amount = body.get("amount")
+    bidder = request.user
+    get_bid = Bid.objects.filter(bidder_id=bidder.id, amount=amount, item_id=item_id)
+    if get_bid.exists():
+        return JsonResponse({ "success": False, "message": "Already bidded" })
+    Bid.objects.create(item_id=item_id, amount=amount, bidder_id=bidder.id)
+    return JsonResponse({ "success": True, "message": "success"})
 
 
 def user_profile(request, user_id):
