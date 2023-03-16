@@ -11,6 +11,12 @@ class AbsoluteUrlStorage(Storage):
         self.base_url = base_url or settings.MEDIA_URL
         self.location = location or settings.MEDIA_ROOT
 
+    def exists(self, name):
+        # Define the logic for checking if a file exists
+        # in your storage system here.
+        # Return True if the file exists, False otherwise.
+        pass
+
     def _open(self, name, mode='rb'):
         return urllib.request.urlopen(name)
 
