@@ -44,7 +44,7 @@ class Item(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(storage=AbsoluteUrlStorage(), blank=True)
-    price = models.DecimalField(max_digits=8, decimal_places=2)
+    price = models.BigIntegerField()
     seller = models.ForeignKey(DjangoUser, on_delete=models.PROTECT)
     added_at = models.DateTimeField(auto_now_add=True)
     deadline_at = models.DateTimeField(blank=True)

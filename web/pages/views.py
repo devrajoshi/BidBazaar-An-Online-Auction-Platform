@@ -1,6 +1,6 @@
 from django.contrib import messages
 import json
-import random
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponseNotFound, JsonResponse
 from django.contrib.auth.models import User as DjangoUser
@@ -18,20 +18,20 @@ from .models import Item, User, Bid
 
 
 def index(request):
-    fake = Faker()
+    #fake = Faker()
 
-    for _ in range(0, 5):
-        title = fake.name()
-        item = {
-            "title": title,
-            "description": fake.sentence(),
-            "image": fake.image_url(),
-            "price": random.uniform(0, 10000),
-            "seller_id": 1,
-            "deadline_at": fake.date_time(),
-            "slug": slugify(title)
-        }
-        Item.objects.create(**item)
+    #for _ in range(0, 5):
+    #    title = fake.name()
+    #    item = {
+    #        "title": title,
+    #        "description": fake.sentence(),
+    #        "image": fake.image_url(),
+    #        "price": random.uniform(0, 10000),
+    #        "seller_id": 1,
+    #        "deadline_at": fake.date_time(),
+    #        "slug": slugify(title)
+    #    }
+    #    Item.objects.create(**item)
 
     user = None
     if request.user.is_authenticated:
@@ -68,6 +68,7 @@ def register(request):
                 user.set_password(password)
                 user = user.save()
                 site_user.save()
+                messages.success(request, "User registered successful!")
                 return redirect("/login")
             else:
                 messages.error(request, "Something went wrong!")
@@ -175,3 +176,10 @@ def user_profile(request, user_id):
 def logout(request):
     django_logout(request)
     return redirect("/")
+
+def search(request):
+    if request.method == 'GET':
+        query = request.GET.get('q')
+        bids = Item.objects.filter(Q(description__contains=query) | Q(title__contains=query))
+        context = { "bids": bids }
+        return render(request, "search.html", context)
