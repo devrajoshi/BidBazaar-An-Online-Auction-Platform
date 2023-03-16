@@ -30,7 +30,7 @@
             <tbody>
               {% for bid in bids %}
                 <tr>
-                  <td>{{ bid.bidder.username }}</td>
+                  <td>{{ bid.bidder.first_name }}</td>
                   <td>{{ bid.amount }}</td>
                 </tr>
               {% empty %}
