@@ -1,7 +1,8 @@
 from django.contrib import messages
 import json
+import random
 from django.shortcuts import render, redirect
-from django.http import HttpResponseNotFound, JsonResponse
+from django.http import Http404, HttpResponseNotFound, JsonResponse
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth import (
     authenticate,
@@ -10,13 +11,28 @@ from django.contrib.auth import (
 )
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
+from faker import Faker
 
 from .forms import PostItem
 from .models import Item, User, Bid
 
 
-# Create your views here.
 def index(request):
+    fake = Faker()
+
+    for _ in range(0, 5):
+        title = fake.name()
+        item = {
+            "title": title,
+            "description": fake.sentence(),
+            "image": fake.image_url(),
+            "price": random.uniform(0, 10000),
+            "seller_id": 1,
+            "deadline_at": fake.date_time(),
+            "slug": slugify(title)
+        }
+        Item.objects.create(**item)
+
     user = None
     if request.user.is_authenticated:
         user = DjangoUser.objects.get(id=request.user.id)
@@ -25,12 +41,6 @@ def index(request):
     context = {"bids": bids, "user": user}
 
     return render(request, "home.html", context)
-
-
-def explore(request):
-    bids = Item.objects.all()
-    context = {"bids": bids}
-    return render(request, "explore.html", context)
 
 
 def register(request):
@@ -50,7 +60,9 @@ def register(request):
                 messages.error(request, "User already exists!")
                 return render(request, "register.html")
 
-            user = DjangoUser.objects.create(first_name=firstname, last_name=lastname, email=email, username=email)
+            user = DjangoUser.objects.create(
+                first_name=firstname, last_name=lastname, email=email, username=email
+            )
             site_user = User.objects.create(user_id=user.pk)
             if user and site_user:
                 user.set_password(password)
@@ -65,6 +77,7 @@ def register(request):
             return render(request, "register.html")
     else:
         return render(request, "register.html")
+
 
 def login(request):
     if request.user.is_authenticated:
@@ -93,14 +106,17 @@ def login(request):
         redirect_path_next = request.GET.get("next")
         if redirect_path_next:
             messages.info(request, "Please login to continue!")
-        return render(request, "login.html", { "errors": errors })
+        return render(request, "login.html", {"errors": errors})
 
 
 def item_page(request, item_id, item_slug):
     bid = Item.objects.get(id=item_id)
+    if not bid:
+        return HttpResponseNotFound("404 Not Found")
     if bid.slug != item_slug:
         return HttpResponseNotFound("404 Not Found")
-    context = {"bid": bid}
+    bids = Bid.objects.filter(item_id=bid.id)
+    context = {"bid": bid, "bids": bids}
     return render(request, "item_page.html", context)
 
 
@@ -118,33 +134,44 @@ def post_item(request):
             return redirect("/")
         else:
             print("form not valid")
-    
+
     form = PostItem()
-    return render(request, "post_item.html", { "form": form })
+    return render(request, "post_item.html", {"form": form})
+
 
 @login_required(login_url="/login")
 def bid(request, item_id):
-    body = json.loads(request.body)
-    amount = body.get("amount")
+    body = json.loads(request.body.decode())
+    amount = float(body.get("amount"))
     bidder = request.user
-    get_bid = Bid.objects.filter(bidder_id=bidder.id, amount=amount, item_id=item_id)
-    if get_bid.exists():
-        return JsonResponse({ "success": False, "message": "Already bidded" })
+    item = Item.objects.get(id=item_id)
+    if request.user.id == item.seller.id:
+        return JsonResponse({"success": False, "message": "You can't bid your own product!"})
+    bids = Bid.objects.order_by("-id")
+    if bids:
+        if request.user.id == bids[0].bidder.id:
+            return JsonResponse(
+                {"success": False, "message": "You are the highest bidder currently!"}
+            )
+        if amount <= float(bids[0].amount):
+            return JsonResponse(
+                {"success": False, "message": "Please bid higher than the current bid!"}
+            )
     Bid.objects.create(item_id=item_id, amount=amount, bidder_id=bidder.id)
-    return JsonResponse({ "success": True, "message": "success"})
+    return JsonResponse({"success": True, "message": "success"})
 
 
+@login_required(login_url="/login")
 def user_profile(request, user_id):
-    user_details = User.objects.get(id=user_id)
-    context = {"user_details": user_details}
-    return render(request, "profile/me_page.html", context)
+    try:
+        user_details = User.objects.get(id=user_id)
+        context = {"user_details": user_details}
+        return render(request, "profile/me_page.html", context)
+    except:
+        return HttpResponseNotFound("404 Not Found")
 
 
-def me_page(request):
-    context = {}
-    return render(request, "profile/me_page.html", context)
-
-
+@login_required(login_url="/login")
 def logout(request):
     django_logout(request)
     return redirect("/")

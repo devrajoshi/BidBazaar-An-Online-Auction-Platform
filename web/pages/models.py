@@ -1,5 +1,26 @@
 from django.db import models
 from django.contrib.auth.models import User as DjangoUser
+from django.core.files.storage import Storage
+from django.utils.deconstruct import deconstructible
+from django.conf import settings
+import urllib.request
+
+@deconstructible
+class AbsoluteUrlStorage(Storage):
+    def __init__(self, location=None, base_url=None):
+        self.base_url = base_url or settings.MEDIA_URL
+        self.location = location or settings.MEDIA_ROOT
+
+    def _open(self, name, mode='rb'):
+        return urllib.request.urlopen(name)
+
+    def _save(self, name, content):
+        # Here you can define your own logic for storing the file, 
+        # such as uploading it to a remote server via HTTP.
+        return name
+
+    def url(self, name):
+        return name
 
 class User(models.Model):
     user = models.OneToOneField(
@@ -22,7 +43,7 @@ class User(models.Model):
 class Item(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    image = models.ImageField(default=None)
+    image = models.ImageField(storage=AbsoluteUrlStorage(), blank=True)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     seller = models.ForeignKey(DjangoUser, on_delete=models.PROTECT)
     added_at = models.DateTimeField(auto_now_add=True)

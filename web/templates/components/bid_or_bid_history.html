@@ -1,5 +1,8 @@
 {% if user.username == bid.seller.username %}
-  <button class="button" style="padding: 8px 15px; font-size: 18px;">View Bid History</button>
+  {% url 'item_page' bid.id bid.slug as current_url %}
+  {% if request.path != current_url %}
+    <a class="button" style="padding: 8px 15px; font-size: 18px;" href="{% url 'item_page' bid.id bid.slug %}">View Bid History</a>
+  {% endif %}
 {% else %}
   <button class="button" style="padding: 8px 15px; font-size: 18px;" onclick="showBidModal('bid-modal-{{ bid.slug }}')">Bid</button>
 {% endif %}

@@ -1,6 +1,6 @@
 <div class="profile-div hide">
   {% if user.is_authenticated %}
-  <div class="profile-info">
+  <a class="profile-info" href="{% url 'user_profile' user.id %}">
     {% if user.avatar %}
     <div><img src="/uploads/{{ user.avatar }}" /></div>
     {% else %}
@@ -16,7 +16,7 @@
     <div>
       <span>{{ user.username }}</span>
     </div>
-  </div>
+  </a>
   <hr style="color: #bbb;" />
   <div style="margin-top: 10px;">
     <div style="margin-left: 5px; display: flex; justify-content: space-between;">
