@@ -49,7 +49,7 @@ class User(models.Model):
 class Item(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    image = models.ImageField(storage=AbsoluteUrlStorage(), blank=True)
+    image = models.ImageField(blank=True)
     price = models.BigIntegerField()
     seller = models.ForeignKey(DjangoUser, on_delete=models.PROTECT)
     added_at = models.DateTimeField(auto_now_add=True)
