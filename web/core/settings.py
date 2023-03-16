@@ -133,7 +133,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
 MEDIA_ROOT = BASE_DIR / "uploads"
 MEDIA_URL ="/uploads/"
-DEFAULT_FILE_STORAGE = 'pages.models.AbsoluteUrlStorage'
+#DEFAULT_FILE_STORAGE = 'pages.models.AbsoluteUrlStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
