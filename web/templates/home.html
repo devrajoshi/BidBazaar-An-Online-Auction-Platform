@@ -10,13 +10,13 @@
               {% for bid in bids %}
               <div class="auction-item">
                 <div class="auction-item-image">
-                  <img src="{% if bid.image.url|startswith:"https://" %}{{ bid.image }}{% else %}/uploads/{{ bid.image }}{% endif %}" />
+                  <img src="{% if bid.image and bid.image.url|startswith:"https://" %}{{ bid.image }}{% else %}/uploads/{{ bid.image }}{% endif %}" />
                 </div> 
                 <div class="auction-item-description">
                   <div style="display: flex; flex-direction: column;">
                     <div><a class="link" href="/item/{{ bid.id }}/{{ bid.title|slugify }}">{{ bid.title }}</a></div>
                     <div style="font-size: 14px; font-style: italic; color: #aaaaaa;">{{ bid.seller.first_name }}</div>
-                    <div style="font-size: 12px;">Deadline: {{ bid.added_at }}</div>
+                    <div style="font-size: 12px;">Deadline: {{ bid.deadline_at }}</div>
                   </div>
                   <div style="display: flex; flex-direction: column; justify-content: space-between;">
                     <div style="display: flex; align-items: center;">

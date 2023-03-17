@@ -9,7 +9,7 @@
 						{% for bid in bids %}
             <div class="auction-item">
               <div class="auction-item-image">
-                <img src="{% if bid.image.url|startswith:"https://" %}{{ bid.image }}{% else %}/uploads/{{ bid.image }}{% endif %}" />
+                <img src="{% if bid.image and bid.image.url|startswith:"https://" %}{{ bid.image }}{% else %}/uploads/{{ bid.image }}{% endif %}" />
               </div> 
               <div class="auction-item-description">
                 <div style="display: flex; flex-direction: column;">

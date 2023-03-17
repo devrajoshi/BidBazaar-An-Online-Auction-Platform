@@ -1,8 +1,10 @@
 from django.contrib import messages
 import json
+import datetime
+import pytz
 from django.db.models import Q
 from django.shortcuts import render, redirect
-from django.http import Http404, HttpResponseNotFound, JsonResponse
+from django.http import HttpResponseNotFound, JsonResponse
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth import (
     authenticate,
@@ -36,7 +38,7 @@ def index(request):
     user = None
     if request.user.is_authenticated:
         user = DjangoUser.objects.get(id=request.user.id)
-    bids = Item.objects.all()
+    bids = Item.objects.order_by("-pk")
 
     context = {"bids": bids, "user": user}
 
@@ -126,15 +128,30 @@ def post_item(request):
     if request.method == "POST":
         post_item_form = PostItem(request.POST, request.FILES)
 
-        if post_item_form.is_valid():
-            item = post_item_form.save(commit=False)
-            item.slug = slugify(item.title)
-            item.seller_id = request.user.id
-            item.save()
+        try:
+            if post_item_form.is_valid():
+                item = post_item_form.save(commit=False)
+                for _, field_value in post_item_form.cleaned_data.items():
+                    if not field_value:
+                        messages.error(request, "Please enter all the details!")
+                        return render(request, "post_item.html", { "form": post_item_form })
+                if item.deadline_at > pytz.timezone('Asia/Kathmandu').localize(datetime.datetime.now()):
+                    item.slug = slugify(item.title)
+                    item.seller_id = request.user.id
+                    item.save()
 
-            return redirect("/")
-        else:
-            print("form not valid")
+                    return redirect("/")
+                else:
+                    messages.error(request, "Cannot create an auction in the past!")
+                    return render(request, "post_item.html", { "form": post_item_form })
+            else:
+                messages.error(request, "Check all the details again!")
+                return render(request, "post_item.html", { "form": post_item_form })
+        except Exception as e:
+            print(e)
+            messages.error(request, "Something went wrong")
+            return render(request, "post_item.html", { "form": post_item_form })
+
 
     form = PostItem()
     return render(request, "post_item.html", {"form": form})
@@ -143,18 +160,18 @@ def post_item(request):
 @login_required(login_url="/login")
 def bid(request, item_id):
     body = json.loads(request.body.decode())
-    amount = float(body.get("amount"))
+    amount = int(body.get("amount"))
     bidder = request.user
     item = Item.objects.get(id=item_id)
     if request.user.id == item.seller.id:
         return JsonResponse({"success": False, "message": "You can't bid your own product!"})
     bids = Bid.objects.order_by("-id")
     if bids:
-        if request.user.id == bids[0].bidder.id:
+        if request.user.id == bids[0].bidder.id and bids[0].item.id == item_id:
             return JsonResponse(
                 {"success": False, "message": "You are the highest bidder currently!"}
             )
-        if amount <= float(bids[0].amount):
+        if bids[0].item.id == item_id and amount <= int(bids[0].amount):
             return JsonResponse(
                 {"success": False, "message": "Please bid higher than the current bid!"}
             )
