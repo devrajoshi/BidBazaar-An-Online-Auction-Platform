@@ -39,4 +39,4 @@ class Bid(models.Model):
     bidder = models.ForeignKey(DjangoUser, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.item
+        return f"{self.bidder.username} bid on {self.item} for {self.amount}"
