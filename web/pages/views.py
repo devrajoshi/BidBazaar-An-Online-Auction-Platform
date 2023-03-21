@@ -196,7 +196,7 @@ def logout(request):
 
 def search(request):
     if request.method == 'GET':
-        query = request.GET.get('q')
+        query = request.GET.get('q').lower()
         bids = Item.objects.filter(Q(description__contains=query) | Q(title__contains=query))
         context = { "bids": bids }
         return render(request, "search.html", context)
