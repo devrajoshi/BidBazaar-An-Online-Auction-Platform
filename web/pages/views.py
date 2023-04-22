@@ -18,9 +18,9 @@ from .models import Item, User, Bid
 
 
 def index(request):
-    #fake = Faker()
+    # fake = Faker()
 
-    #for _ in range(0, 5):
+    # for _ in range(0, 5):
     #    title = fake.name()
     #    item = {
     #        "title": title,
@@ -147,7 +147,9 @@ def bid(request, item_id):
     bidder = request.user
     item = Item.objects.get(id=item_id)
     if request.user.id == item.seller.id:
-        return JsonResponse({"success": False, "message": "You can't bid your own product!"})
+        return JsonResponse(
+            {"success": False, "message": "You can't bid your own product!"}
+        )
     bids = Bid.objects.order_by("-id")
     if bids:
         if request.user.id == bids[0].bidder.id:
@@ -177,9 +179,12 @@ def logout(request):
     django_logout(request)
     return redirect("/")
 
+
 def search(request):
-    if request.method == 'GET':
-        query = request.GET.get('q')
-        bids = Item.objects.filter(Q(description__contains=query) | Q(title__contains=query))
-        context = { "bids": bids }
+    if request.method == "GET":
+        query = request.GET.get("q")
+        bids = Item.objects.filter(
+            Q(description__contains=query) | Q(title__contains=query)
+        )
+        context = {"bids": bids}
         return render(request, "search.html", context)
