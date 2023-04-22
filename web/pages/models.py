@@ -1,32 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User as DjangoUser
-from django.core.files.storage import Storage
-from django.utils.deconstruct import deconstructible
-from django.conf import settings
-import urllib.request
-
-@deconstructible
-class AbsoluteUrlStorage(Storage):
-    def __init__(self, location=None, base_url=None):
-        self.base_url = base_url or settings.MEDIA_URL
-        self.location = location or settings.MEDIA_ROOT
-
-    def exists(self, name):
-        # Define the logic for checking if a file exists
-        # in your storage system here.
-        # Return True if the file exists, False otherwise.
-        pass
-
-    def _open(self, name, mode='rb'):
-        return urllib.request.urlopen(name)
-
-    def _save(self, name, content):
-        # Here you can define your own logic for storing the file, 
-        # such as uploading it to a remote server via HTTP.
-        return name
-
-    def url(self, name):
-        return name
 
 class User(models.Model):
     user = models.OneToOneField(
@@ -66,4 +39,4 @@ class Bid(models.Model):
     bidder = models.ForeignKey(DjangoUser, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.item
+        return f"{self.bidder.username} bid on {self.item} for {self.amount}"

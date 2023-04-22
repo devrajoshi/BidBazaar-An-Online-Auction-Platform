@@ -1,16 +1,18 @@
-{% extends "layouts/base.html" %}
+{% extends 'layouts/base.html' %}
 
 {% block body %}
-<main style="display: flex; justify-content: start; align-items: center;">
-<section>
-  <h2>Insert Details</h2>
-  <div>
-    <form class="post-item-form" method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Post</button>
-    </form>
-  </div>
-</section>
+<main style="margin-top: 10px;">
+  <h2>Post Item</h2>
+  <br /><br />
+  {% include 'profile/side_bar.html' %}
+  <section>
+    <div>
+      <form class="post-item-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Post</button>
+      </form>
+    </div>
+  </section>
 </main>
 {% endblock %}

@@ -161,7 +161,6 @@ main {
   width: 200px;
   background-color: var(--bg-primary);
   position: fixed;
-  height: 100%;
   overflow: auto;
 }
 
@@ -174,7 +173,7 @@ main {
 
 .sidebar a.active {
   background-color: var(--button-bg-primary);
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 .sidebar a:hover:not(.active) {
@@ -206,52 +205,6 @@ main {
 }
 .item-details-title {
   padding: 10px 0 50px 100px;
-}
-.post-item {
-  padding-left: 200px;
-
-  font-weight: bold;
-  font-size: 20px;
-
-  display: flex;
-}
-
-.post-item form {
-  width: 60%;
-  /* background: #1e1; */
-}
-.post-item div {
-  margin-bottom: 2.2em;
-  display: flex;
-  justify-content: space-between;
-  align-items: stretch;
-  /* background: #fff; */
-}
-
-.post-item input {
-  height: 30px;
-  padding: 5px;
-  font-size: 16px;
-}
-
-.post-item .item-title {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-
-.post-item .item-description {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-
-.post-item .item-condition select {
-  width: 120px;
-  height: 30px;
-
-  font-size: 16px;
-  text-align: center;
 }
 
 .post-item-form {
