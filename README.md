@@ -1,13 +1,13 @@
 # imperiumbid
 
-ImperiumBid - An Online Bidding Platform
+_ImperiumBid - An Online Bidding Platform_
 
-## Requirements
+## :battery: Requirements
 
 - Python (> 3.8)
 - PostgreSQL
 
-## Running Instructions
+## :wrench: Running Instructions
 
 - `cd imperium`
 - `python -m venv venv`
@@ -25,5 +25,6 @@ Finally run,
 - `python manage.py runserver`
 
 To load dummy data,
+
 - `cd web`
 - `python manage.py loaddata dump.json`
