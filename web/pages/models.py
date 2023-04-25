@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User as DjangoUser
 
+
 class User(models.Model):
     user = models.OneToOneField(
         DjangoUser, on_delete=models.CASCADE, related_name="profile"
@@ -19,6 +20,16 @@ class User(models.Model):
     def __str__(self):
         return self.get_full_name()
 
+
+class Category(models.Model):
+    class Meta:
+        verbose_name_plural = "categories"
+    name = models.CharField(max_length=255)
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Item(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -26,11 +37,14 @@ class Item(models.Model):
     price = models.BigIntegerField()
     seller = models.ForeignKey(DjangoUser, on_delete=models.PROTECT)
     added_at = models.DateTimeField(auto_now_add=True)
+    starts_at = models.DateTimeField(blank=True)
     deadline_at = models.DateTimeField(blank=True)
     slug = models.CharField(max_length=255)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.title
+
 
 class Bid(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
