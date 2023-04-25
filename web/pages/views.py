@@ -23,24 +23,36 @@ def index(request):
     # fake = Faker()
 
     # for _ in range(0, 5):
-    #    title = fake.name()
-    #    item = {
-    #        "title": title,
-    #        "description": fake.sentence(),
-    #        "image": fake.image_url(),
-    #        "price": random.uniform(0, 10000),
-    #        "seller_id": 1,
-    #        "deadline_at": fake.date_time(),
-    #        "slug": slugify(title)
-    #    }
-    #    Item.objects.create(**item)
+    #     title = fake.name()
+    #     item = {
+    #         "title": title,
+    #         "description": fake.sentence(),
+    #         "image": fake.image_url(),
+    #         "price": random.uniform(0, 10000),
+    #         "seller_id": 1,
+    #         "deadline_at": fake.date_time(),
+    #         "slug": slugify(title)
+    #     }
+    #     Item.objects.create(**item)
 
     user = None
     if request.user.is_authenticated:
         user = DjangoUser.objects.get(id=request.user.id)
-    bids = Item.objects.order_by("-pk")
 
-    context = {"bids": bids, "user": user}
+    hot_bids = Item.objects.filter(
+        started_at__lte=datetime.datetime.now()
+    ).order_by(
+        "-pk"
+    )
+    upcoming_bids = Item.objects.filter(
+        started_at__gt=datetime.datetime.now()
+    ).order_by("-pk")
+
+    context = {
+            "hot_bids": hot_bids,
+            "upcoming_bids": upcoming_bids,
+            "user": user
+    }
 
     return render(request, "home.html", context)
 
@@ -63,7 +75,9 @@ def register(request):
                 return render(request, "register.html")
 
             user = DjangoUser.objects.create(
-                first_name=firstname, last_name=lastname, email=email, username=email
+                first_name=firstname,
+                last_name=lastname,
+                email=email, username=email
             )
             site_user = User.objects.create(user_id=user.pk)
             if user and site_user:
@@ -133,25 +147,40 @@ def post_item(request):
                 item = post_item_form.save(commit=False)
                 for _, field_value in post_item_form.cleaned_data.items():
                     if not field_value:
-                        messages.error(request, "Please enter all the details!")
-                        return render(request, "post_item.html", { "form": post_item_form })
-                if item.deadline_at > pytz.timezone('Asia/Kathmandu').localize(datetime.datetime.now()):
+                        messages.error(request,
+                                       "Please enter all the details!")
+                        return render(
+                            request, "post_item.html", {"form": post_item_form}
+                        )
+                if item.deadline_at > pytz.timezone("Asia/Kathmandu").localize(
+                    datetime.datetime.now()
+                ):
                     item.slug = slugify(item.title)
                     item.seller_id = request.user.id
                     item.save()
 
                     return redirect("/")
                 else:
-                    messages.error(request, "Cannot create an auction in the past!")
-                    return render(request, "post_item.html", { "form": post_item_form })
+                    messages.error(
+                            request,
+                            "Cannot create an auction in the past!"
+                    )
+                    return render(
+                            request,
+                            "post_item.html",
+                            {"form": post_item_form}
+                    )
             else:
                 messages.error(request, "Check all the details again!")
-                return render(request, "post_item.html", { "form": post_item_form })
+                return render(
+                        request,
+                        "post_item.html",
+                        {"form": post_item_form}
+                )
         except Exception as e:
             print(e)
             messages.error(request, "Something went wrong")
-            return render(request, "post_item.html", { "form": post_item_form })
-
+            return render(request, "post_item.html", {"form": post_item_form})
 
     form = PostItem()
     return render(request, "post_item.html", {"form": form})
@@ -165,17 +194,26 @@ def bid(request, item_id):
     item = Item.objects.get(id=item_id)
     if request.user.id == item.seller.id:
         return JsonResponse(
-            {"success": False, "message": "You can't bid your own product!"}
+            {
+                "success": False,
+                "message": "You can't bid your own product!"
+            }
         )
     bids = Bid.objects.order_by("-id")
     if bids:
         if request.user.id == bids[0].bidder.id and bids[0].item.id == item_id:
             return JsonResponse(
-                {"success": False, "message": "You are the highest bidder currently!"}
+                {
+                    "success": False,
+                    "message": "You are the highest bidder currently!"
+                }
             )
         if bids[0].item.id == item_id and amount <= int(bids[0].amount):
             return JsonResponse(
-                {"success": False, "message": "Please bid higher than the current bid!"}
+                {
+                    "success": False,
+                    "message": "Please bid higher than the current bid!"
+                }
             )
     Bid.objects.create(item_id=item_id, amount=amount, bidder_id=bidder.id)
     return JsonResponse({"success": True, "message": "success"})
@@ -187,7 +225,8 @@ def user_profile(request, user_id):
         user_details = User.objects.get(id=user_id)
         context = {"user_details": user_details}
         return render(request, "profile/me_page.html", context)
-    except:
+    except Exception as e:
+        print(e)
         return HttpResponseNotFound("404 Not Found")
 
 
@@ -198,8 +237,11 @@ def logout(request):
 
 
 def search(request):
-    if request.method == 'GET':
-        query = request.GET.get('q').lower()
-        bids = Item.objects.filter(Q(description__contains=query) | Q(title__contains=query))
-        context = { "bids": bids }
+    if request.method == "GET":
+        query = request.GET.get("q")
+        query_safe = query.lower()
+        bids = Item.objects.filter(
+            Q(description__contains=query_safe) | Q(title__contains=query_safe)
+        )
+        context = {"query": query, "bids": bids}
         return render(request, "search.html", context)
