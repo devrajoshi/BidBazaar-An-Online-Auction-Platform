@@ -15,14 +15,12 @@ import random
 import pytz
 from datetime import datetime, timedelta
 from django.utils.text import slugify
-import psycopg2
+import django
 
-conn = psycopg2.connect(
-    host="localhost",
-    database="imperium",
-    user="bl4ck",
-    password="broot"
-)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
+django.setup()
+
+from pages.models import Item, Category
 
 base_url = "https://www.ugallery.com"
 categories = {
@@ -52,19 +50,10 @@ links = {
     "Surrealism": ["/art/mixed-media-artwork-the-souvenir",   "/art/mixed-media-artwork-coincidence",   "/art/mixed-media-artwork-sunday-in-the-burb",   "/art/oil-painting-roots",   "/art/oil-painting-relic",   "/art/mixed-media-artwork-black-cherry-n-vanilla",   "/art/oil-painting-these-boots",   "/art/oil-painting-venus-75199",   "/art/oil-painting-nebula",   "/art/oil-painting-time-ii",   "/art/oil-painting-time-i",   "/art/mixed-media-artwork-other-worlds",   "/art/mixed-media-artwork-the-waiting",   "/art/acrylic-painting-pressure-point",   "/art/mixed-media-artwork-study-for-the-hunter",   "/art/encaustic-artwork-glory-bee",   "/art/encaustic-artwork-her-friend-harvey",   "/art/encaustic-artwork-mystery-of-the-tell-tale-heart",   "/art/acrylic-painting-happiness-in-sorting",   "/art/acrylic-painting-play-room-2",   "/art/oil-painting-sensual-transcendence",   "/art/mixed-media-artwork-the-mountains-between-us",   "/art/oil-painting-ten-of-swords",   "/art/oil-painting-alchemic-kingdom",   "/art/oil-painting-windmills",   "/art/watercolor-painting-birch-wood",   "/art/mixed-media-artwork-old-growth-new-beginnings",   "/art/oil-painting-the-everlasting-folly-of-rose-and-abernathy",   "/art/oil-painting-one-blossom-one-world-peony-deer-i",   "/art/oil-painting-nine-of-swords",   "/art/oil-painting-eight-of-swords-ii",   "/art/oil-painting-rest-60880",   "/art/acrylic-painting-remembrance",   "/art/acrylic-painting-the-stroll",   "/art/acrylic-painting-yellowstone-with-lock-and-key",   "/art/acrylic-painting-water-of-life",   "/art/oil-painting-who-are-these-angels-cxlv",   "/art/acrylic-painting-luminous-stream",   "/art/mixed-media-artwork-desert-and-the-sea",   "/art/oil-painting-natura-naturans",   "/art/oil-painting-new-toy",   "/art/oil-painting-lines-upon-lines",   "/art/acrylic-painting-from-the-ashes",   "/art/encaustic-artwork-case-of-the-mythical-monkey",   "/art/encaustic-artwork-mystery-of-the-blue-velvet-mask",   "/art/acrylic-painting-prologue-of-a-cherry",   "/art/acrylic-painting-sorting-peaches",   "/art/oil-painting-out-of-this-world",   "/art/oil-painting-one-blossom-one-world-peony-deer-iii",   "/art/oil-painting-her-transformation",   "/art/oil-painting-isolation-iii",   "/art/acrylic-painting-don-t-be-sad-it-could-have-been-worse",   "/art/acrylic-painting-semaphore",   "/art/oil-painting-emptiness",   "/art/oil-painting-blue-green-cubist-cafe",   "/art/oil-painting-morning-joy",   "/art/oil-painting-nature-is-love",   "/art/oil-painting-tranquil-blue",   "/art/oil-painting-grateful",   "/art/oil-painting-dream-a-little-dream-of-me"],
 }
 
-cur = conn.cursor()
-
-
 
 # add categories to db first
 # for category in categories.keys():
-#     cur.execute("INSERT INTO pages_category VALUES (%s, %s)", (categories[category], category))
-# conn.commit()
-# 
-# cur.close()
-# conn.close()
-
-
+#     Category.objects.create(id=categories[category], name=category)
 
 s = requests.Session()
 
@@ -91,14 +80,6 @@ for category in links.keys():
             starts_at = current_time + random_future
         deadline_at = current_time + one_week
         slug = slugify(title)
-        try:
-            cur.execute("SELECT id FROM pages_item ORDER BY id DESC LIMIT 1")
-            id = cur.fetchone()[0] + 1
-        except Exception as e:
-            print(e)
-            id = 1
-        cur.execute("INSERT INTO pages_item VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (id, title, description, image_url, price, added_at, starts_at, deadline_at, slug, category_id, seller))
-        # print(f"'{id}', '{title}', '{description}', '1.png', '{price}', '{added_at}', '{starts_at}', '{deadline_at}', '{slug}', '{category_id}', '{seller}'")
+        Item.objects.create(title=title, description=description, image=image_url, price=price, added_at=added_at, starts_at=starts_at, deadline_at=deadline_at, slug=slug, category_id=category_id, seller_id=seller)
 
-cur.close()
-conn.close()
+        # print(f"'{id}', '{title}', '{description}', '1.png', '{price}', '{added_at}', '{starts_at}', '{deadline_at}', '{slug}', '{category_id}', '{seller}'")
