@@ -16,9 +16,14 @@ from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from faker import Faker
 
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+import pandas as pd
+
 from .forms import PostItem
 from .models import Item, User, Bid
-
 
 def index(request):
     # fake = Faker()
@@ -126,6 +131,38 @@ def login(request):
             messages.info(request, "Please login to continue!")
         return render(request, "login.html", {"errors": errors})
 
+def recommend_items(item_id):
+    items = Item.objects.all()
+
+    # Preprocess title and description fields
+    preprocessed_text = []
+    for item in items:
+        text = f'{item.title} {item.description}'
+        # Tokenize
+        tokens = text.split()
+        # Remove stop words
+        stop_words = set(stopwords.words('english'))
+        tokens = [word for word in tokens if not word.lower() in stop_words]
+        # Stemming
+        stemmer = PorterStemmer()
+        tokens = [stemmer.stem(word) for word in tokens]
+        # Combine processed title and description
+        preprocessed_text.append(' '.join(tokens))
+
+    # Compute TF-IDF feature vectors
+    vectorizer = TfidfVectorizer()
+    features = vectorizer.fit_transform(preprocessed_text)
+
+    # Compute pairwise similarities
+    similarities = cosine_similarity(features)
+
+    # Convert similarities to a pandas DataFrame
+    df_similarities = pd.DataFrame(similarities, index=[item.id for item in items], columns=[item.id for item in items])
+
+    # Get item ID and similarity scores for a given item ID
+    similar_items = df_similarities[item_id].sort_values(ascending=False)[:10]
+    return similar_items
+
 
 def item_page(request, item_id, item_slug):
     bid = Item.objects.get(id=item_id)
@@ -133,8 +170,10 @@ def item_page(request, item_id, item_slug):
         return HttpResponseNotFound("404 Not Found")
     if bid.slug != item_slug:
         return HttpResponseNotFound("404 Not Found")
+    recommended = recommend_items(bid.id).index
+    recommended_items = Item.objects.filter(id__in=recommended.tolist()[:4])
     bids = Bid.objects.filter(item_id=bid.id)
-    context = {"bid": bid, "bids": bids}
+    context = {"bid": bid, "bids": bids, "recommended_items": recommended_items}
     return render(request, "item_page.html", context)
 
 
