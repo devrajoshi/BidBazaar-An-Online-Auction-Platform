@@ -8,6 +8,7 @@
 # }
 
 import os
+import sys
 import wget
 import requests
 from bs4 import BeautifulSoup
@@ -24,11 +25,11 @@ from pages.models import Item, Category
 
 base_url = "https://www.ugallery.com"
 categories = {
-    "Abstract": "1",
-    "Classical": "2",
-    "Contemporary": "3",
-    "Expressionism": "4",
-    "Impressionism": "5",
+    # "Abstract": "1",
+    # "Classical": "2",
+    # "Contemporary": "3",
+    # "Expressionism": "4",
+    # "Impressionism": "5",
     "Minimalism": "6",
     "Modern": "7",
     "Pop": "8",
@@ -56,13 +57,22 @@ links = {
 #     Category.objects.create(id=categories[category], name=category)
 
 s = requests.Session()
-
+start = False
 for category in links.keys():
     for link in links[category]:
+        print(link)
+        if start is False:
+            if link == "/art/oil-painting-interruption":
+                start = True
+            continue
         r = s.get(base_url+link)
         soup = BeautifulSoup(r.text, "lxml")
         title = soup.select("h2[itemprop='name']")[0].get_text()
-        description = soup.select("[class='artwork-description']")[0].get_text().replace("'", "''")
+        try:
+            description = soup.select("[class='artwork-description']")[0].get_text().replace("'", "''")
+        except IndexError as e:
+            print(e)
+            description = "No description"
         image = soup.select("img[itemprop='image']")[0]["src"]
         image_url = os.path.basename(image)
         if not os.path.exists("/mnt/sda2/home/bl4ck/Documents/Code/Study/minor_project/imperium/web/uploads/" + image_url):
