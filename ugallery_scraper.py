@@ -52,35 +52,33 @@ links = {
 
 cur = conn.cursor()
 
-for category in categories.keys():
-    cur.execute("INSERT INTO pages_category VALUES (%s, %s)", (categories[category], category))
-conn.commit()
-cur.close()
-conn.close()
-
-
+# add categories to db first
+# for category in categories.keys():
+#     cur.execute("INSERT INTO pages_category VALUES (%s, %s)", (categories[category], category))
+# conn.commit()
 
 s = requests.Session()
 
-for link in links:
-    r = s.get(base_url+link)
-    soup = BeautifulSoup(r.text, "lxml")
-    title = soup.select("h2[itemprop='name']")[0].get_text()
-    description = soup.select("[class='artwork-description']")[0].get_text().replace("'", "''")
-    category = categories["Abstract"]
-    price = random.randint(500, 10000)
-    seller = 1
-    current_time = datetime.now(pytz.timezone('Asia/Kathmandu'))
-    random_future = timedelta(days=random.randint(0, 30))
-    one_week = timedelta(weeks=1)
-    added_at = current_time
-    if random.randint(0, 1):
-        starts_at = current_time
-    else:
-        starts_at = current_time + random_future
-    deadline_at = current_time + one_week
-    slug = slugify(title)
-    print(f"'1', '{title}', '{description}', '1.png', '{price}', '{added_at}', '{starts_at}', '{deadline_at}', '{slug}', '{category}', '{seller}'")
+for category in links.keys():
+    for link in links[category]:
+        r = s.get(base_url+link)
+        soup = BeautifulSoup(r.text, "lxml")
+        title = soup.select("h2[itemprop='name']")[0].get_text()
+        description = soup.select("[class='artwork-description']")[0].get_text().replace("'", "''")
+        category_id = categories[category]
+        price = random.randint(500, 10000)
+        seller = 1
+        current_time = datetime.now(pytz.timezone('Asia/Kathmandu'))
+        random_future = timedelta(days=random.randint(0, 30))
+        one_week = timedelta(weeks=1)
+        added_at = current_time
+        if random.randint(0, 1):
+            starts_at = current_time
+        else:
+            starts_at = current_time + random_future
+        deadline_at = current_time + one_week
+        slug = slugify(title)
+        print(f"'1', '{title}', '{description}', '1.png', '{price}', '{added_at}', '{starts_at}', '{deadline_at}', '{slug}', '{category_id}', '{seller}'")
 
 cur.close()
 conn.close()
