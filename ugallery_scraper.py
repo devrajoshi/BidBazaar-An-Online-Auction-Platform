@@ -78,7 +78,14 @@ for category in links.keys():
             starts_at = current_time + random_future
         deadline_at = current_time + one_week
         slug = slugify(title)
-        print(f"'1', '{title}', '{description}', '1.png', '{price}', '{added_at}', '{starts_at}', '{deadline_at}', '{slug}', '{category_id}', '{seller}'")
+        try:
+            cur.execute("SELECT id FROM pages_item ORDER BY id DESC LIMIT 1")
+            id = cur.fetchone()[0]
+        except Exception as e:
+            print(e)
+            id = 1
+        cur.execute("INSERT INTO pages_item VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (id, title, description, image_url, price, added_at, starts_at, deadline_at, slug, category_id, seller))
+        print(f"'{id}', '{title}', '{description}', '1.png', '{price}', '{added_at}', '{starts_at}', '{deadline_at}', '{slug}', '{category_id}', '{seller}'")
 
 cur.close()
 conn.close()
