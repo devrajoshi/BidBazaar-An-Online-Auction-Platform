@@ -243,7 +243,7 @@ def search(request):
         query = request.GET.get("q")
         query_safe = query.lower()
         bids = Item.objects.filter(
-            Q(description__contains=query_safe) | Q(title__contains=query_safe)
+            Q(description__icontains=query_safe) | Q(title__icontains=query_safe)
         )
         context = {"query": query, "bids": bids}
         return render(request, "search.html", context)
