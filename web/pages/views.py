@@ -1,6 +1,7 @@
 from django.contrib import messages
 import json
 import datetime
+from django.utils import timezone
 import pytz
 from django.db.models import Q
 from django.shortcuts import render, redirect
@@ -40,12 +41,12 @@ def index(request):
         user = DjangoUser.objects.get(id=request.user.id)
 
     hot_bids = Item.objects.filter(
-        started_at__lte=datetime.datetime.now()
+        starts_at__lte=timezone.now()
     ).order_by(
         "-pk"
     )
     upcoming_bids = Item.objects.filter(
-        started_at__gt=datetime.datetime.now()
+        starts_at__gt=timezone.now()
     ).order_by("-pk")
 
     context = {
@@ -222,7 +223,7 @@ def bid(request, item_id):
 @login_required(login_url="/login")
 def user_profile(request, user_id):
     try:
-        user_details = User.objects.get(id=user_id)
+        user_details = DjangoUser.objects.get(id=user_id).profile
         context = {"user_details": user_details}
         return render(request, "profile/me_page.html", context)
     except Exception as e:
