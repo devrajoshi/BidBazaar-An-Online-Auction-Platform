@@ -9,6 +9,10 @@
 
 import requests
 from bs4 import BeautifulSoup
+import random
+import pytz
+from datetime import datetime, timedelta
+from django.utils.text import slugify
 
 base_url = "https://www.ugallery.com"
 categories = {
@@ -35,4 +39,16 @@ for link in links:
     title = soup.select("h2[itemprop='name']")[0].get_text()
     description = soup.select("[class='artwork-description']")[0].get_text()
     category = "Abstract"
-    print(description)
+    price = random.randint(500, 10000)
+    seller = 1
+    current_time = datetime.now(pytz.timezone('Asia/Kathmandu'))
+    random_future = timedelta(days=random.randint(0, 30))
+    one_week = timedelta(weeks=1)
+    added_at = current_time
+    if random.randint(0, 1):
+        starts_at = current_time
+    else:
+        starts_at = current_time + random_future
+    deadline_at = current_time + one_week
+    slug = slugify(title)
+    print(title, description, category, price, seller, added_at, starts_at, deadline_at, slug)
