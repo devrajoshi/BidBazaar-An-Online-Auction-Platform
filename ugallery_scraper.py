@@ -7,6 +7,8 @@
 # 	}
 # }
 
+import os
+import wget
 import requests
 from bs4 import BeautifulSoup
 import random
@@ -65,6 +67,10 @@ for category in links.keys():
         soup = BeautifulSoup(r.text, "lxml")
         title = soup.select("h2[itemprop='name']")[0].get_text()
         description = soup.select("[class='artwork-description']")[0].get_text().replace("'", "''")
+        image = soup.select("img[itemprop='image']")[0]["src"]
+        image_url = os.path.basename(image)
+        if not os.path.exists("/mnt/sda2/home/bl4ck/Documents/Code/Study/minor_project/imperium/web/uploads/" + image_url):
+            wget.download(image, out="/mnt/sda2/home/bl4ck/Documents/Code/Study/minor_project/imperium/web/uploads")
         category_id = categories[category]
         price = random.randint(500, 10000)
         seller = 1
@@ -85,7 +91,7 @@ for category in links.keys():
             print(e)
             id = 1
         cur.execute("INSERT INTO pages_item VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (id, title, description, image_url, price, added_at, starts_at, deadline_at, slug, category_id, seller))
-        print(f"'{id}', '{title}', '{description}', '1.png', '{price}', '{added_at}', '{starts_at}', '{deadline_at}', '{slug}', '{category_id}', '{seller}'")
+        # print(f"'{id}', '{title}', '{description}', '1.png', '{price}', '{added_at}', '{starts_at}', '{deadline_at}', '{slug}', '{category_id}', '{seller}'")
 
 cur.close()
 conn.close()
