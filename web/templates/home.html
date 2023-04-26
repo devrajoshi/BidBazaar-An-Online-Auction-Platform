@@ -6,7 +6,7 @@
         <section style="margin-top: 5px;">
           <h2>Hot Bids</h2>
           <div class="auction-item-list">
-            {% for bid in running %}
+            {% for bid in hot_bids %}
               <div class="auction-item">
                 <div class="auction-item-image">
                   <img src="{% if bid.image and bid.image.url|startswith:"https://" %}{{ bid.image }}{% else %}/uploads/{{ bid.image }}{% endif %}" />
@@ -38,7 +38,7 @@
         <section style="margin-top: 5px;">
           <h2>Upcoming Bids</h2>
           <div class="auction-item-list">
-            {% for bid in upcoming %}
+            {% for bid in upcoming_bids %}
               <div class="auction-item">
                 <div class="auction-item-image">
                   <img src="{% if bid.image and bid.image.url|startswith:"https://" %}{{ bid.image }}{% else %}/uploads/{{ bid.image }}{% endif %}" />

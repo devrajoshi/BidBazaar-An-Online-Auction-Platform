@@ -157,6 +157,7 @@ def post_item(request):
                     datetime.datetime.now()
                 ):
                     item.slug = slugify(item.title)
+                    item.starts_at = datetime.datetime.now()
                     item.seller_id = request.user.id
                     item.save()
 

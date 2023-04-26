@@ -13,20 +13,34 @@ import random
 import pytz
 from datetime import datetime, timedelta
 from django.utils.text import slugify
+import psycopg2
+
+conn = psycopg2.connect(
+    host="localhost",
+    database="imperium",
+    user="bl4ck",
+    password="broot"
+)
+
+cur = conn.cursor()
+cur.execute("INSERT INTO pages_category VALUES (%s, %s)", ("1", "Abstract"))
+conn.commit()
+cur.close()
+conn.close()
 
 base_url = "https://www.ugallery.com"
 categories = {
-    "Abstract": "https://www.ugallery.com/abstract-artwork",
-    "Classical": "https://www.ugallery.com/classical-artwork",
-    "Contemporary": "https://www.ugallery.com/Contemporary-artwork",
-    "Expressionism": "https://www.ugallery.com/expressionism-artwork",
-    "Impressionism": "https://www.ugallery.com/impressionism-artwork",
-    "Minimalism": "https://www.ugallery.com/minimalism-artwork",
-    "Modern": "https://www.ugallery.com/modern-artwork",
-    "Pop": "https://www.ugallery.com/pop-culture-artwork",
-    "Primitive": "https://www.ugallery.com/primitive-artwork",
-    "Realism": "https://www.ugallery.com/realism-artwork",
-    "Surrealism": "https://www.ugallery.com/surrealism-artwork"
+    "Abstract": "1",
+    "Classical": "2",
+    "Contemporary": "3",
+    "Expressionism": "4",
+    "Impressionism": "5",
+    "Minimalism": "6",
+    "Modern": "7",
+    "Pop": "8",
+    "Primitive": "9",
+    "Realism": "10",
+    "Surrealism": "11"
 }
 
 s = requests.Session()
@@ -37,8 +51,8 @@ for link in links:
     r = s.get(base_url+link)
     soup = BeautifulSoup(r.text, "lxml")
     title = soup.select("h2[itemprop='name']")[0].get_text()
-    description = soup.select("[class='artwork-description']")[0].get_text()
-    category = "Abstract"
+    description = soup.select("[class='artwork-description']")[0].get_text().replace("'", "''")
+    category = categories["Abstract"]
     price = random.randint(500, 10000)
     seller = 1
     current_time = datetime.now(pytz.timezone('Asia/Kathmandu'))
@@ -51,4 +65,7 @@ for link in links:
         starts_at = current_time + random_future
     deadline_at = current_time + one_week
     slug = slugify(title)
-    print(title, description, category, price, seller, added_at, starts_at, deadline_at, slug)
+    print(f"'1', '{title}', '{description}', '1.png', '{price}', '{added_at}', '{starts_at}', '{deadline_at}', '{slug}', '{category}', '{seller}'")
+
+cur.close()
+conn.close()
