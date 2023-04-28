@@ -180,6 +180,17 @@ main {
   color: var(--text-primary);
 }
 
+.item-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.item-table th, .item-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
 .profile-container {
   margin: 0px 50px -30px 200px;
   padding: 10px 0 50px 80px;

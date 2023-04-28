@@ -8,21 +8,28 @@
 		{% include 'profile/side_bar.html' %}
 		<section>
 			<div>
-				{% if items %}
-					<table>
+				{% if my_items %}
+					<table class="item-table">
 						<thead>
 							<tr>
 								<th>Item Name</th>
 								<th>Description</th>
 								<th>Price</th>
+								<th>Actions</th>
 							</tr>
 						</thead>
 						<tbody>
-							{% for item in items %}
+							{% for item in my_items %}
 								<tr>
-									<td>{{ item.name }}</td>
+									<td style="display: flex; gap: 10px; align-items: center;">
+										<div><img src="/uploads/{{ item.image }}" width="50" height="50" ></div>
+										<div>{{ item.title }}</div>
+									</td>
 									<td>{{ item.description }}</td>
 									<td>{{ item.price }}</td>
+									<td>
+										<a  class="link" href="{% url 'item_page' item.id item.slug %}">View</a>
+									</td>
 								</tr>
 							{% endfor %}
 						</tbody>

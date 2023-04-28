@@ -25,6 +25,7 @@ import pandas as pd
 from .forms import PostItem, Settings
 from .models import Item, User, Bid
 
+
 def index(request):
     # fake = Faker()
 
@@ -287,7 +288,7 @@ def search(request):
         context = {"query": query, "bids": bids}
         return render(request, "search.html", context)
 
-
+@login_required(login_url="/login")
 def settings(request):
     if request.method == 'POST':
         form = Settings(request.POST, instance=request.user)
@@ -299,6 +300,7 @@ def settings(request):
     return render(request, 'profile/settings.html', {'form': form})
 
 
+@login_required(login_url="/login")
 def my_items(request):
-    my_item_list = Item.objects.filter(seller=request.user.id)
+    my_item_list = Item.objects.filter(seller_id=request.user.id)
     return render(request, 'profile/my_items.html', {'my_items': my_item_list})
