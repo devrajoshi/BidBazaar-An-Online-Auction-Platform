@@ -22,7 +22,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 import pandas as pd
 
-from .forms import PostItem
+from .forms import PostItem, Settings
 from .models import Item, User, Bid
 
 def index(request):
@@ -132,7 +132,7 @@ def login(request):
         return render(request, "login.html", {"errors": errors})
 
 def recommend_items(item_id):
-    items = Item.objects.all()
+    items = Item.objects.filter(bid__isnull=True)
 
     # Preprocess title and description fields
     preprocessed_text = []
@@ -286,3 +286,19 @@ def search(request):
         )
         context = {"query": query, "bids": bids}
         return render(request, "search.html", context)
+
+
+def settings(request):
+    if request.method == 'POST':
+        form = Settings(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('user_profile', request.user.id)
+    else:
+        form = Settings(instance=request.user)
+    return render(request, 'profile/settings.html', {'form': form})
+
+
+def my_items(request):
+    my_item_list = Item.objects.filter(seller=request.user.id)
+    return render(request, 'profile/my_items.html', {'my_items': my_item_list})

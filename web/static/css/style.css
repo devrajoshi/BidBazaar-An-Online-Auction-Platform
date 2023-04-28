@@ -160,7 +160,6 @@ main {
   padding: 0;
   width: 200px;
   background-color: var(--bg-primary);
-  position: fixed;
   overflow: auto;
 }
 
@@ -184,7 +183,6 @@ main {
 .profile-container {
   margin: 0px 50px -30px 200px;
   padding: 10px 0 50px 80px;
-  height: 800px;
 }
 
 .profile-container .user-profile-card .profile {

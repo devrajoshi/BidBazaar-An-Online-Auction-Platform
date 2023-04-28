@@ -15,6 +15,8 @@ urlpatterns = [
     path("bid/<int:item_id>/", views.bid, name='bid'),
     path("post/", views.post_item, name="post_item"),
     path("profile/<int:user_id>", views.user_profile, name="user_profile"),
+    path("settings/", views.settings, name="settings"),
+    path("my-items/", views.my_items, name="my_items"),
 ]
 
 if settings.DEBUG:

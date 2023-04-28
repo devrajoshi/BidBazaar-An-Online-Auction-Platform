@@ -4,23 +4,23 @@
 <main style="margin-top: 10px;">
   <h2>Profile</h2>
   <br /><br />
-  {% include 'profile/side_bar.html' %}
-  <div class="profile-container">
-    <section class="user-profile-card">
-      <div class="profile">
-        <figure>
-          <img src="/uploads/profile.png" alt="profile-pic" width="100px" height="100px">
-        </figure>
-        <p>{{ user_details.get_full_name }}</p>
-        <p>{{ user_details.user_id }}</p>
-      </div>
-      
-      <div class="user-extra-details">
-        <p>E-mail : {{ user_details.user.email }}</p>
-        <p>PAN No : {{ user_details.pan_no }}</p>
-        <p>Citizenship ID : {{ user_details.citizen_no }}</p>
-      </div>
-    </section>
-    </div>
+	<div style="display: flex;">
+		{% include 'profile/side_bar.html' %}
+		<div class="profile-container">
+			<section class="user-profile-card">
+				<div class="profile">
+					<figure>
+						<img src="/uploads/profile.png" alt="profile-pic" width="100px" height="100px">
+					</figure>
+					<p>{{ user_details.get_full_name }}</p>
+					<p>{{ user_details.user_id }}</p>
+				</div>
+				
+				<div class="user-extra-details">
+					<p>E-mail : {{ user_details.user.email }}</p>
+				</div>
+			</section>
+		</div>
+	</div>
 </main>
 {% endblock %}

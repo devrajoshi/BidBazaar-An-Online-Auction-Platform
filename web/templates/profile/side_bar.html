@@ -2,8 +2,8 @@
 
 <div class="sidebar">
   <a href="/profile/{{ request.user.id }}"{% if request.path|startswith:'/profile' %} class="active"{% endif %}>Me</a>
-  <a href=""{% if request.path|startswith:'/settings' %} class="active"{% endif %}>Settings</a>
+  <a href="/settings/"{% if request.path|startswith:'/settings' %} class="active"{% endif %}>Settings</a>
   <a href="/post"{% if request.path|startswith:'/post' %} class="active"{% endif %}>Post Item</a>
-  <a href="">Revenue</a>
+  <a href="/my-items/">My Items</a>
   <a href="/logout">Log Out</a>
 </div>
