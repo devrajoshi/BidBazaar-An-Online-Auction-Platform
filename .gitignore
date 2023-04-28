@@ -3,5 +3,3 @@ imvenv
 __pycache__
 
 .env
-
-web/uploads/*

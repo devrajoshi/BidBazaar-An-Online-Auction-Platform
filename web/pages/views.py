@@ -1,6 +1,7 @@
 from django.contrib import messages
 import json
 import datetime
+from django.utils import timezone
 import pytz
 from django.db.models import Q
 from django.shortcuts import render, redirect
@@ -15,9 +16,14 @@ from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from faker import Faker
 
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+import pandas as pd
+
 from .forms import PostItem
 from .models import Item, User, Bid
-
 
 def index(request):
     # fake = Faker()
@@ -40,12 +46,12 @@ def index(request):
         user = DjangoUser.objects.get(id=request.user.id)
 
     hot_bids = Item.objects.filter(
-        started_at__lte=datetime.datetime.now()
+        starts_at__lte=timezone.now()
     ).order_by(
         "-pk"
     )
     upcoming_bids = Item.objects.filter(
-        started_at__gt=datetime.datetime.now()
+        starts_at__gt=timezone.now()
     ).order_by("-pk")
 
     context = {
@@ -125,6 +131,38 @@ def login(request):
             messages.info(request, "Please login to continue!")
         return render(request, "login.html", {"errors": errors})
 
+def recommend_items(item_id):
+    items = Item.objects.all()
+
+    # Preprocess title and description fields
+    preprocessed_text = []
+    for item in items:
+        text = f'{item.title} {item.description}'
+        # Tokenize
+        tokens = text.split()
+        # Remove stop words
+        stop_words = set(stopwords.words('english'))
+        tokens = [word for word in tokens if not word.lower() in stop_words]
+        # Stemming
+        stemmer = PorterStemmer()
+        tokens = [stemmer.stem(word) for word in tokens]
+        # Combine processed title and description
+        preprocessed_text.append(' '.join(tokens))
+
+    # Compute TF-IDF feature vectors
+    vectorizer = TfidfVectorizer()
+    features = vectorizer.fit_transform(preprocessed_text)
+
+    # Compute pairwise similarities
+    similarities = cosine_similarity(features)
+
+    # Convert similarities to a pandas DataFrame
+    df_similarities = pd.DataFrame(similarities, index=[item.id for item in items], columns=[item.id for item in items])
+
+    # Get item ID and similarity scores for a given item ID
+    similar_items = df_similarities[item_id].sort_values(ascending=False)[:10]
+    return similar_items
+
 
 def item_page(request, item_id, item_slug):
     bid = Item.objects.get(id=item_id)
@@ -132,8 +170,10 @@ def item_page(request, item_id, item_slug):
         return HttpResponseNotFound("404 Not Found")
     if bid.slug != item_slug:
         return HttpResponseNotFound("404 Not Found")
+    recommended = recommend_items(bid.id).index
+    recommended_items = Item.objects.filter(id__in=recommended.tolist()[:4])
     bids = Bid.objects.filter(item_id=bid.id)
-    context = {"bid": bid, "bids": bids}
+    context = {"bid": bid, "bids": bids, "recommended_items": recommended_items}
     return render(request, "item_page.html", context)
 
 
@@ -156,6 +196,7 @@ def post_item(request):
                     datetime.datetime.now()
                 ):
                     item.slug = slugify(item.title)
+                    item.starts_at = datetime.datetime.now()
                     item.seller_id = request.user.id
                     item.save()
 
@@ -222,7 +263,7 @@ def bid(request, item_id):
 @login_required(login_url="/login")
 def user_profile(request, user_id):
     try:
-        user_details = User.objects.get(id=user_id)
+        user_details = DjangoUser.objects.get(id=user_id).profile
         context = {"user_details": user_details}
         return render(request, "profile/me_page.html", context)
     except Exception as e:
@@ -241,7 +282,7 @@ def search(request):
         query = request.GET.get("q")
         query_safe = query.lower()
         bids = Item.objects.filter(
-            Q(description__contains=query_safe) | Q(title__contains=query_safe)
+            Q(description__icontains=query_safe) | Q(title__icontains=query_safe)
         )
         context = {"query": query, "bids": bids}
         return render(request, "search.html", context)
