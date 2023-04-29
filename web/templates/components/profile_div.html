@@ -1,6 +1,10 @@
 <div class="profile-div hide">
   {% if user.is_authenticated %}
+  {% if user.is_superuser %}
+  <a class="profile-info" href="/admin">
+  {% else %}
   <a class="profile-info" href="{% url 'user_profile' user.id %}">
+  {% endif %}
     {% if user.avatar %}
     <div><img src="/uploads/{{ user.avatar }}" /></div>
     {% else %}
