@@ -50,10 +50,10 @@ def index(request):
         starts_at__lte=timezone.now()
     ).order_by(
         "-pk"
-    )
+        )[:8]
     upcoming_bids = Item.objects.filter(
         starts_at__gt=timezone.now()
-    ).order_by("-pk")
+        ).order_by("-pk")[:8]
 
     context = {
             "hot_bids": hot_bids,
