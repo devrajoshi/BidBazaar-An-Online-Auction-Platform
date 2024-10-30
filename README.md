@@ -1,6 +1,6 @@
-# imperiumbid
+# BidBazaar
 
-_ImperiumBid - An Online Bidding Platform_
+_BidBazaar - An Online Bidding Platform_
 
 ## :battery: Requirements
 
@@ -9,7 +9,7 @@ _ImperiumBid - An Online Bidding Platform_
 
 ## :wrench: Running Instructions
 
-- `cd imperium`
+- `cd BidBazaar`
 - `python -m venv venv`
 - `. venv/Scripts/activate` (For Windows)
 - `source venv/Scripts/activate` (For Git Bash)
